@@ -1,0 +1,58 @@
+Schedule
+
+Week 2, 
+Finalize group
+Finalize plan
+Meet client to confirm all details
+
+Week 6
+Finish prototype UI
+Finish basic functionality
+Show client the prototype 
+Use case showcase
+
+Week 8
+All function complete
+Bugs have been removed
+Sql server done 
+Auth0 for passwords
+
+Week 10 
+Finish final UI for the project, 
+Check again with client
+
+Week 12 
+Finish the project and have it working, complete it early so that there are no other problems with it
+No more features should be added after this point
+
+Week 13 
+Finish presentation
+Begin practice
+
+Week 14 
+Presentation due
+
+
+
+Database SQL
+Authentication Auth0
+backend programming Next js 
+Frontend programming React
+UI  Tailwind CSS
+
+
+
+
+UI Design (HTML/CSS)  - Victor and Vinni
+Functions and Use cases(JavaScript) - Saihaj and Andrew
+Client Meeting (Regularly) - Victor 
+
+
+
+Sponsors Current System: 
+
+Our client’s current website with a booking system is very simple and straightforward; it allows users to view available times for both the client as well as her mother. The system starts as soon as the user selects an available time, then it takes the user to a separate page where the user is prompted to enter their personal information. Once the user has entered their information, they will be booked into the system. 
+ 
+Proposed Solution: 
+
+Our proposed solution is to transition our client from her previous website to a redesigned website with a booking system, that allows any user to create an account and log in and have their information be retained within the systems database. This will allow the user to be able to access their booking and rebook if needed, as well as change their information more easily. Also, as requested by the client, we will be redesigning the front-end of the website, giving it more detail and a modern design that gives off a more user-friendly experience.
