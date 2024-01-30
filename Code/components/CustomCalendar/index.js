@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CreateEventPopUp from "./CreateEventPopup";
 import { setEventData } from "../redux/eventsSlice";
 import DeleteEventPopup from "./DeleteEventPopup";
+
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const locales = {

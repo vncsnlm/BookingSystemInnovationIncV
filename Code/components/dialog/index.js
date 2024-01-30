@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import React from "react";
 import { MdClose } from "react-icons/md";
+
 const BaseDialog = ({ open, handleClose, children, title }) => {
     return (
         <Dialog open={open} onClose={handleClose} sx={{}} scroll="paper">

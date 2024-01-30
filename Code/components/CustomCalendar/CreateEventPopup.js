@@ -7,11 +7,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import PrimaryButton from "components/Common/Buttons/PrimaryButton";
+import PrimaryButton from "../Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
-import { fetchEventsStart } from "redux/events/eventsSlice";
-import BaseDialog from "components/Common/Dialog";
+import { fetchEventsStart } from "../redux/eventsSlice";
+import BaseDialog from "../dialog";
 
 const mapState = ({ eventsData }) => ({
   event: eventsData.event,
@@ -153,8 +153,6 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   );
 };
 
-export default CreateEventPopUp;
-
 const colorsList = [
   "#624b4b",
   "#bc2020",
@@ -167,3 +165,5 @@ const colorsList = [
   "#cae958",
   "#dc3e09",
 ];
+
+export default CreateEventPopUp;
