@@ -1,4 +1,7 @@
 'use client';
+import { Provider } from 'react-redux';
+import { store, persistor } from '../components/redux/configureStore';
+
 
 import './globals.css';
 import NavBar from '../components/NavBar';
@@ -20,6 +23,7 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="https://cdn.auth0.com/js/auth0-samples-theme/1.0/css/auth0-theme.min.css" />
       </head>
       <body>
+      <Provider store={store}>
         <UserProvider>
           <main id="app" className="d-flex flex-column h-100" data-testid="layout">
             <NavBar />
@@ -27,7 +31,9 @@ export default function RootLayout({ children }) {
             <Footer />
           </main>
         </UserProvider>
+        </Provider>
       </body>
     </html>
   );
 }
+//</Provider>

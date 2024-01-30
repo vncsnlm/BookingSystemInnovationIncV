@@ -8,9 +8,9 @@ import enUS from "date-fns/locale/en-US";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import { useDispatch, useSelector } from "react-redux";
-//import CreateEventPopUp from "./CreateEventPopup";
+import CreateEventPopUp from "./CreateEventPopup";
 import { setEventData } from "../redux/eventsSlice";
-//import DeleteEventPopup from "./DeleteEventPopup";
+import DeleteEventPopup from "./DeleteEventPopup";
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const locales = {
