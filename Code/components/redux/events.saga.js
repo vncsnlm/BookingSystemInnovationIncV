@@ -1,5 +1,5 @@
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import { handleFetchEvents } from "./events.helpers";
+import { handleFetchEvents } from "./event.helper";
 import { fetchEventsStart, setEvents } from "./eventsSlice";
 
 export function* fetchEvents({ payload }) {

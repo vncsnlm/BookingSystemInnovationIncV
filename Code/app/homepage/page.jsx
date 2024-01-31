@@ -1,7 +1,8 @@
 import React from 'react';
-import './HomePage.css'; // Make sure to create a CSS file with the name HomePage.css
+import './HomePage.css'; 
 
 function HomePage() {
+  
   return (
     <div className="home-container" style={{ backgroundImage:"Code\Images\IMG_5620.jpg" }}>
       <nav className="navbar">

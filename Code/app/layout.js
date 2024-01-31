@@ -1,6 +1,6 @@
-import { Provider } from 'react-redux';
-import { store } from '../../components/redux/store'; // import your Redux store
 import '../styles/globals.css';
+import { Provider } from 'react-redux';
+import { Store } from 'redux';
 
 export const metadata = {
   title: 'Next.js',
