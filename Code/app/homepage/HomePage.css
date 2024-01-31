@@ -12,11 +12,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.5); /* Adjust the transparency as needed */
+    background-color: rgba(255, 255, 255, 0.5); 
   }
   
   .navbar-left {
-    /* Your styles for the left side of the navbar */
+    /* Styles for the left side of the navbar */
   }
   
   .nav-logo img {
@@ -24,28 +24,26 @@
   }
   
   .navbar-right {
-    /* Your styles for the right side of the navbar */
+    /* Styles for the right side of the navbar */
   }
   
   .navbar-right a {
     margin-right: 20px;
-    /* Your styles for the call to action */
+    /* Styles for the call to action */
   }
   
   .book-now {
     padding: 10px 20px;
-    background-color: #A984B5; /* Replace with your color */
+    background-color: #A984B5; 
     color: white;
     border: none;
     cursor: pointer;
-    /* Additional styles for the button */
   }
   
   .navbar-links a {
     margin-right: 20px;
-    color: #9E76B4; /* Replace with your color */
+    color: #9E76B4;
     text-decoration: none;
-    /* Additional styles for navbar links */
   }
   
   .main-content {
@@ -55,11 +53,10 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: wheat; /* Replace with your color */
+    color: wheat;
   }
   
   .main-content h1 {
     margin-bottom: 20px;
-    /* Additional styles for the main content title */
   }
   
