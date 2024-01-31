@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { FormControlLabel, Radio, Typography } from "@mui/material";
-//import BaseDialog from "components/Common/Dialog";
+import BaseDialog from "../dialog";
 
 
 import { fetchEventsStart } from "../redux/eventsSlice";
