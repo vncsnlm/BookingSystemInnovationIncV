@@ -5,6 +5,7 @@ import {
     deleteEvent,
 } from "../../../backend/controllers/eventController";
 
+
 export default async function handler(req, res) {
     const { method } = req;
 
