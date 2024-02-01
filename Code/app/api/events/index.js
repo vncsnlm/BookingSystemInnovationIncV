@@ -3,7 +3,7 @@ import {
     getEvents,
     createEvent,
     deleteEvent,
-} from "../../../backend/controllers/eventController";
+} from "../../../backend/controllers/eventController.js";
 
 
 export default async function handler(req, res) {
