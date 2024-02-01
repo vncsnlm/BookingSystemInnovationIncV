@@ -9,9 +9,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import { useDispatch, useSelector } from "react-redux";
 import CreateEventPopUp from "./CreateEventPopup";
-import { setEventData } from "../redux/eventsSlice";
+import { setEventData } from "redux/events/eventsSlice";
 import DeleteEventPopup from "./DeleteEventPopup";
-
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const locales = {
@@ -95,6 +94,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
   const handleEventSelect = (event) => {
     handleRemoveDialogOpen();
     setData(event);
+    console.log(event)
   };
   const handleRemoveDialogOpen = () => {
     setOpenRemoveDialog(true);
@@ -102,6 +102,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
   const handleRemoveDialogClose = () => {
     setOpenRemoveDialog(false);
     setEventData({});
+    setData({});
   };
   const handleDialogClose = () => {
     setOpenDialog(false);

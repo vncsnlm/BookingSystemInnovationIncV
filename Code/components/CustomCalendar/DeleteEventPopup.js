@@ -2,11 +2,9 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { FormControlLabel, Radio, Typography } from "@mui/material";
-import BaseDialog from "../dialog";
-
-
-import { fetchEventsStart } from "../redux/eventsSlice";
-import PrimaryButton from "../Buttons/PrimaryButton";
+import BaseDialog from "components/Common/Dialog";
+import { fetchEventsStart } from "redux/events/eventsSlice";
+import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 
 const DeleteEventPopup = ({ event, open, handleClose }) => {
   const dispatch = useDispatch();
