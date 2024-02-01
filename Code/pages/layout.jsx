@@ -1,6 +1,6 @@
 'use client';
 import { Provider } from 'react-redux';
-import { store, persistor } from '../components/redux/configureStore';
+import { store } from '../redux/configureStore';
 
 
 import './globals.css';
