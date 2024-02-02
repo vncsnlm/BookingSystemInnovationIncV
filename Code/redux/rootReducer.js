@@ -4,13 +4,13 @@ import { persistReducer } from "redux-persist";
 import eventsSlice from "./events/eventsSlice";
 
 export const rootReducer = combineReducers({
-    eventsData: eventsSlice,
+  eventsData: eventsSlice,
 });
 
 const configStorage = {
-    key: "root",
-    storage,
-    whitelist: ["events"],
+  key: "root",
+  storage,
+  whitelist: ["events"],
 };
 
 export default persistReducer(configStorage, rootReducer);

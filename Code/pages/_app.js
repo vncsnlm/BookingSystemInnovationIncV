@@ -4,17 +4,22 @@ import { PersistGate } from "redux-persist/integration/react";
 import "styles/globals.css";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "theme";
+import UserProvider from "components/UserProvider";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Provider store={store}>
-      {/* <PersistGate persistor={persistor}> */}
+    <div>
+      <UserProvider>
+      <Provider store={store}>
+        {/* <PersistGate persistor={persistor}> */}
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Component {...pageProps} />
         </ThemeProvider>
-      {/* </PersistGate> */}
-    </Provider>
+        {/* </PersistGate> */}
+      </Provider>
+    </UserProvider>
+    </div>
   );
 }
 

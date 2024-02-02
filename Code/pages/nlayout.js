@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
+import UserProvider from 'components/UserProvider';
 
 export const metadata = {
   title: 'Next.js',
@@ -16,12 +17,3 @@ export default function RootLayout({ Component, pageProps }) {
     </html>
   )
 }
-
-function MyApp({ Component, pageProps }) {
-  return (
-    <Provider store={store}>
-      <Component {...pageProps} />
-    </Provider>
-  );
-}
-

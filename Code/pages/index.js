@@ -1,5 +1,5 @@
 import React from 'react';
-import './Homepage/HomePage.css'; 
+//import './HomePage/HomePage.css'; //Something is broken with css
 
 function HomePage() {
   
