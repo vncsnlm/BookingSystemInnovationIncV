@@ -7,11 +7,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import PrimaryButton from "../Buttons/PrimaryButton";
+import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
-import { fetchEventsStart } from "../redux/eventsSlice";
-import BaseDialog from "../dialog";
+import { fetchEventsStart } from "redux/events/eventsSlice";
+import BaseDialog from "components/Common/Dialog";
 
 const mapState = ({ eventsData }) => ({
   event: eventsData.event,
@@ -31,7 +31,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const handleCreateEvent = (e) => {
     e.preventDefault();
-
+if(!title){
+  return;
+}
     try {
       const schema = {
         title: title,
@@ -60,17 +62,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   };
 
   return (
-    <BaseDialog open={open} handleClose={handleClose} scroll={`body`}>
-      <DialogTitle
-        style={{
-          fontSize: "21px",
-          fontWeight: "bold",
-          marginTop: "-24px",
-        }}
-      >
-        Add Event
-      </DialogTitle>
-
+    <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
       <Container
         sx={{
           background: "white",
@@ -87,6 +79,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
         )}
         <TextField
           fullWidth
+          required
           sx={{ marginTop: "16px" }}
           placeholder="Title"
           label="Title"
@@ -95,8 +88,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
         />
         <div>
           <div style={{ paddingTop: "16px" }}>
-            <label style={{ fontWeight: 700 }}>Select Color</label>
-            <div style={{ display: "flex" }}>
+            <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
+            <div style={{ display: "flex",marginTop:'12px',marginBottom:'4px' }}>
               {colorsList.map((item) => {
                 return (
                   <div
@@ -124,6 +117,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
                 background: "none",
               }}
             />
+            <div>Change start time</div>
+            <div>Change duration</div>
             <Typography>
               Selected color: <b>{backgroundColor}</b>
             </Typography>
@@ -141,9 +136,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           <PrimaryButton
             onClick={handleCreateEvent}
             sx={{
-              paddingRight: "32px",
-              paddingLeft: "32px",
+              // paddingRight: "32px",
+              // paddingLeft: "32px",
+              width:"200px"
             }}
+            disabled={!title}
           >
             Confirm
           </PrimaryButton>
@@ -152,6 +149,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     </BaseDialog>
   );
 };
+
+export default CreateEventPopUp;
 
 const colorsList = [
   "#624b4b",
@@ -165,5 +164,3 @@ const colorsList = [
   "#cae958",
   "#dc3e09",
 ];
-
-export default CreateEventPopUp;
