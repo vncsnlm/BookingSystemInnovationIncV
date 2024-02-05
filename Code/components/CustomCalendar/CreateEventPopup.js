@@ -13,6 +13,8 @@ import { format } from "date-fns";
 import { fetchEventsStart } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
 
+import { useUser } from '@auth0/nextjs-auth0/client';
+
 const mapState = ({ eventsData }) => ({
   event: eventsData.event,
 });
@@ -32,8 +34,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const changeEndTime = ({ length }) => {
     //alert(length+0)
-    alert(`You change the lenght of the massage to ${length}`);
-    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    //alert(`You change the lenght of the massage to ${length}`);
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    endTimeAndDate = new Date(startTimeAndDate);//Reset time
     endTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     setMassageLenght(length);

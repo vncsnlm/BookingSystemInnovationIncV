@@ -37,6 +37,7 @@ export default function Home() {
                     testId="navbar-login-desktop">
           Log in here
         </a>
+        <br/>
         {user && (
                     <img
                       src={user.picture}
@@ -48,11 +49,12 @@ export default function Home() {
                       data-testid="navbar-picture-desktop"
                     />
               )}
+        <br/>
         <a href="/api/auth/logout" icon="power-off" testId="navbar-logout-desktop">
           Log out
         </a>
       </div>
-      
+      <a href="/booking">Go create a booking</a>      
     </div>
   );
 }
