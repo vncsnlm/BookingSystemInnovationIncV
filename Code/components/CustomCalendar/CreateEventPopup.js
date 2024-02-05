@@ -21,15 +21,15 @@ const mapState = ({ eventsData }) => ({
 
 
 const CreateEventPopUp = ({ handleClose, open }) => {
-  const { event } = useSelector(mapState);
+  var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
   var endTimeAndDate = event.end;
-  const from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
+  var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
-  const [massageLenght, setMassageLenght] = useState(30);
+  //const [massageLenght, setMassageLenght] = useState(30);
   const dispatch = useDispatch();
 
   const changeEndTime = ({ length }) => {
@@ -39,7 +39,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     endTimeAndDate = new Date(startTimeAndDate);//Reset time
     endTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    setMassageLenght(length);
+    //setMassageLenght(length);
+    to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+    event.end = endTimeAndDate;
   };
 
   const handleCreateEvent = (e) => {
