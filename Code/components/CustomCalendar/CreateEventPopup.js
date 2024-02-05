@@ -32,6 +32,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   //const [massageLenght, setMassageLenght] = useState(30);
   const dispatch = useDispatch();
 
+  const { user, isLoading } = useUser();
+
   const changeEndTime = ({ length }) => {
     //alert(length+0)
     //alert(`You change the lenght of the massage to ${length}`);
@@ -41,7 +43,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //setMassageLenght(length);
     to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
-    event.end = endTimeAndDate;
+    //event.end = endTimeAndDate;
   };
 
   const handleCreateEvent = (e) => {
@@ -57,6 +59,18 @@ const CreateEventPopUp = ({ handleClose, open }) => {
         start: startTimeAndDate,
         end: endTimeAndDate,
       };
+      //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
+      if(!user){
+        alert("Your not logged in, please log in")
+        //Turning it off for easier development
+        //schema.description = user;
+        
+        //This breaks it
+        //alert("Schema change")
+      }
+      delete schema.description
+      schema.description = user;
+
       const url = "/api/events";
       fetch(url, {
         method: "POST",
