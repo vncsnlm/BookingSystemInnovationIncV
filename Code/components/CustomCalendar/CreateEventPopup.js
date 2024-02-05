@@ -17,23 +17,33 @@ const mapState = ({ eventsData }) => ({
   event: eventsData.event,
 });
 
+
 const CreateEventPopUp = ({ handleClose, open }) => {
   const { event } = useSelector(mapState);
-  const startTimeAndDate = event.start;
-  const endTimeAndDate = event.end;
+  var startTimeAndDate = event.start;
+  var endTimeAndDate = event.end;
   const from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
-  const formattedStartDate =
-    startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
-  const to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+  const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
+  var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
+  const [massageLenght, setMassageLenght] = useState(30);
   const dispatch = useDispatch();
+
+  const changeEndTime = ({ length }) => {
+    //alert(length+0)
+    alert(`You change the lenght of the massage to ${length}`);
+    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    endTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    setMassageLenght(length);
+  };
 
   const handleCreateEvent = (e) => {
     e.preventDefault();
-if(!title){
-  return;
-}
+    if(!title){
+      return;
+    }
     try {
       const schema = {
         title: title,
@@ -95,9 +105,9 @@ if(!title){
                   <div
                     key={item}
                     style={{
+                      background: item,
                       width: "20px",
                       height: "20px",
-                      background: item,
                       marginRight: "8px",
                     }}
                     onClick={() => setBackgroundColor(item)}
@@ -117,13 +127,35 @@ if(!title){
                 background: "none",
               }}
             />
-            <div>Change start time</div>
-            <div>Change duration</div>
             <Typography>
               Selected color: <b>{backgroundColor}</b>
             </Typography>
           </div>
         </div>
+        <div>
+        <div>Change start time</div>
+            <div>Change duration
+              <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
+                {potentialLenght.map((item) => (
+                <button
+                  key={item}
+                  style={{
+                  marginRight: '8px',
+                  padding: '8px', // Add padding for better styling
+                  cursor: 'pointer', // Add cursor pointer for better UX
+                }}
+                onClick={() => changeEndTime({length:item})}//Why it has to call length like this, I have no clue, but it has to be like this.
+                >
+                {item}
+                </button>
+                ))}
+              </div>
+            <div>
+              Selected color: <b>insert selected lenght</b>
+            </div>
+            </div>
+        </div>
+        
 
         <div
           style={{
@@ -164,3 +196,8 @@ const colorsList = [
   "#cae958",
   "#dc3e09",
 ];
+const potentialLenght = [
+  30,
+  60,
+  90
+]
