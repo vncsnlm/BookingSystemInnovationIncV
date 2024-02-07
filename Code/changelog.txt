@@ -6,3 +6,11 @@ also system to prevent bookings from having conflicting times
 add an update button
 
 find way to update description and schema with user idenifier
+
+add some where in api that will check if user is admin
+it should be done in back/api and store on mongodb
+it should only sure admin information if user is admin,
+
+if client logs in, the event should only show their, non bookable and active bookings.
+
+may wnat to create session ids, we can not only use email as that is a security risk

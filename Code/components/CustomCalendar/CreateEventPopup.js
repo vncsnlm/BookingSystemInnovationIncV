@@ -55,6 +55,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       const schema = {
         title: title,
         description: "",
+        user: String(user.email),//User is not being saved it seems
         background: backgroundColor,
         start: startTimeAndDate,
         end: endTimeAndDate,
@@ -63,13 +64,12 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       if(!user){
         alert("Your not logged in, please log in")
         //Turning it off for easier development
-        //schema.description = user;
-
-        //This breaks it
-        //alert("Schema change")
+        //return
+      }else{
+        //testing
+        //alert(user.email)
+        //alert(schema.user)
       }
-      //delete schema.description
-      //schema.description = user;
 
       const url = "/api/events";
       fetch(url, {

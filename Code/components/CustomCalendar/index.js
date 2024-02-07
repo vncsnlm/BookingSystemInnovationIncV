@@ -30,6 +30,8 @@ const localizer = dateFnsLocalizer({
 
 const customDayPropGetter = (date) => {
   const currentDate = new Date();
+  const lastBookableDate = new Date(currentDate)
+  lastBookableDate.setDate(currentDate.getDate() + 14);//The 14 here represents the number of days after today that can be booked.
   if (date < currentDate)
     return {
       className: "disabled-day",
@@ -38,6 +40,14 @@ const customDayPropGetter = (date) => {
         background: "rgba(184, 184, 184, 0.1)",
       },
     };
+  if (date > lastBookableDate)//Limit how long before the customer is allowed to book, and and number of day away that are open, if needed.
+  return {
+    className: "disabled-day",
+    style: {
+      cursor: "not-allowed",
+      background: "rgba(184, 184, 184, 0.1)",
+    },
+  };
   else return {};
 };
 
