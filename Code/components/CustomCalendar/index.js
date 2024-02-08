@@ -30,9 +30,15 @@ const localizer = dateFnsLocalizer({
 
 const customDayPropGetter = (date) => {
   const currentDate = new Date();
-  const lastBookableDate = new Date(currentDate)
+  const lastBookableDate = new Date()
   lastBookableDate.setDate(currentDate.getDate() + 14);//The 14 here represents the number of days after today that can be booked.
-  if (date < currentDate)
+  
+  //console.log('Current Date:', currentDate);
+  //console.log('Last Bookable Date:', lastBookableDate);
+  console.log('Selected Date:', date);
+  
+  if ((date < currentDate)){//) || (lastBookableDate < date)
+    console.log('Date is before or equal to current date');
     return {
       className: "disabled-day",
       style: {
@@ -40,7 +46,10 @@ const customDayPropGetter = (date) => {
         background: "rgba(184, 184, 184, 0.1)",
       },
     };
-  if (date > lastBookableDate)//Limit how long before the customer is allowed to book, and and number of day away that are open, if needed.
+  }
+
+  if (lastBookableDate < date){//Limit how long before the customer is allowed to book, and and number of day away that are open, if needed.
+  console.log('Date is after last bookable date');
   return {
     className: "disabled-day",
     style: {
@@ -48,7 +57,9 @@ const customDayPropGetter = (date) => {
       background: "rgba(184, 184, 184, 0.1)",
     },
   };
-  else return {};
+  }
+
+  return {};
 };
 
 const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {

@@ -29,7 +29,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
-  //const [massageLenght, setMassageLenght] = useState(30);
+  const [massageLenght, setMassageLenght] = useState(30);
   const dispatch = useDispatch();
 
   const { user, isLoading } = useUser();
@@ -43,6 +43,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //setMassageLenght(length);
     to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+    setMassageLenght(length)
     //event.end = endTimeAndDate;
   };
 
@@ -152,7 +153,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           </div>
         </div>
         <div>
-        <div>Change start time</div>
+        
             <div>Change duration
               <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
                 {potentialLenght.map((item) => (
@@ -170,7 +171,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
                 ))}
               </div>
             <div>
-              Selected color: <b>insert selected lenght</b>
+              Selected lenght: <b>{massageLenght} minutes</b>
             </div>
             </div>
         </div>
