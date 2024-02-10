@@ -7,7 +7,7 @@ also system to prevent bookings from having conflicting times
 
 add an update button
 
-find way to update description and schema with user idenifier
+might need to change user idenifier
 
 add some where in api that will check if user is admin
 it should be done in back/api and store on mongodb

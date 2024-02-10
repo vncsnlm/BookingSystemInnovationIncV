@@ -63,13 +63,14 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
       if(!user){
         alert("Your not logged in, please log in")
         //Turning it off for easier development
-        //schema.description = user;
+        //return
 
         //This breaks it
         //alert("Schema change")
       }
       //delete schema.description
       //schema.description = user;
+      
 
       const url = "/api/events";
       fetch(url, {

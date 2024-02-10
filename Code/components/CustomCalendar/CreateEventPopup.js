@@ -26,7 +26,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   var endTimeAndDate = event.end;
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
-  var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const [massageLenght, setMassageLenght] = useState(30);
@@ -42,7 +42,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     endTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //setMassageLenght(length);
-    to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    //alert(to_time)//This give the previous time, not the new set time
     setMassageLenght(length)
     //event.end = endTimeAndDate;
   };
@@ -52,11 +53,22 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     if(!title){
       return;
     }
+    ///////////////////////////////////testing
+    var userEmail = "default testing"
+    if(!user){
+      alert("sign in")
+      userEmail = "not_signed_in"
+      alert(userEmail)
+    }else{
+      userEmail = user.email
+    }
+    //////////////////////////////////testing
+    //remember to fix the useremail below
     try {
       const schema = {
         title: title,
         description: "",
-        user: String(user.email),//User is not being saved it seems
+        user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
         start: startTimeAndDate,
         end: endTimeAndDate,
@@ -70,6 +82,13 @@ const CreateEventPopUp = ({ handleClose, open }) => {
         //testing
         //alert(user.email)
         //alert(schema.user)
+      }
+      
+      if(1==1){
+        if(endTimeAndDate<startTimeAndDate){
+          alert("Somehow the end time is after the start, please select a booking lenght to correct")
+          return
+        }
       }
 
       const url = "/api/events";

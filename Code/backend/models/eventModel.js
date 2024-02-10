@@ -17,6 +17,7 @@ const eventSchema = new Schema(
       required: true,
     },
     user: String,
+    status: String,
     description: String,
     timezone: String,
     start_date: String,
