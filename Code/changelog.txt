@@ -1,0 +1,8 @@
+need wokring delete button
+
+admin page to select when user is allowed to book
+also system to prevent bookings from having conflicting times
+
+add an update button
+
+find way to update description and schema with user idenifier
