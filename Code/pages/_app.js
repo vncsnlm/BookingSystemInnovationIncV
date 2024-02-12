@@ -6,6 +6,8 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "theme";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 
+//import "../pages/homepage/HomePages.css"
+
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>

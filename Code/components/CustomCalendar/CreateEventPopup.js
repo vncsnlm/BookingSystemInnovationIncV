@@ -21,7 +21,7 @@ const mapState = ({ eventsData }) => ({
 
 
 const CreateEventPopUp = ({ handleClose, open }) => {
-  let hasSelectLenght = false;//To make sure user has selected a lenght for the massage
+  const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
   //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
@@ -48,9 +48,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     //alert(to_time)//This give the previous time, not the new set time
     setMassageLenght(length)
     //event.end = endTimeAndDate;
-    hasSelectLenght = true
-    //alert(hasSelectLenght)
-    //alert("You selected a massage lenght")
+    
+    setHasSelectLenght(true)//There is a delay to the change
+    alert("You selected a massage lenght")
   };
 
   const handleCreateEvent = (e) => {
@@ -60,13 +60,13 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }
 
     //alert("checking if a massage lenght is selected")
-    //alert(hasSelectLenght)
-    if(!hasSelectLenght){
+    //alert(hasSelectLenght)//!hasSelectLenght
+    if(!hasSelectLenght){//Can only pass if true
       alert("Please select a lenght for the massage before creating booking")
       //alert(hasSelectLenght)
       return
     }
-    hasSelectLenght = false
+    setHasSelectLenght(false)
 
 
     ///////////////////////////////////testing
@@ -130,6 +130,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     handleClose();
   };
 
+  const handleCloseAndReset = (e) => {
+    setHasSelectLenght(false)
+    handleClose()
+  }
+
   return (
     <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
       <Container
@@ -150,8 +155,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           fullWidth
           required
           sx={{ marginTop: "16px" }}
-          placeholder="Title"
-          label="Title"
+          placeholder="Your name"
+          label="Your name"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />

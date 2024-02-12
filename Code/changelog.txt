@@ -20,3 +20,5 @@ may wnat to create session ids, we can not only use email as that is a security 
 
 working on limited the number of days after the current day the user is allowed to book
 not working in customcomputer/index.js yet
+
+there is problem with hasselectmassagelenght in create eventpopup, if user select a lenght, select a lenght close and selects another
