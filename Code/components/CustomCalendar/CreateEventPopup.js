@@ -21,6 +21,8 @@ const mapState = ({ eventsData }) => ({
 
 
 const CreateEventPopUp = ({ handleClose, open }) => {
+  let hasSelectLenght = false;//To make sure user has selected a lenght for the massage
+  //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
   var endTimeAndDate = event.end;
@@ -46,6 +48,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     //alert(to_time)//This give the previous time, not the new set time
     setMassageLenght(length)
     //event.end = endTimeAndDate;
+    hasSelectLenght = true
+    //alert(hasSelectLenght)
+    //alert("You selected a massage lenght")
   };
 
   const handleCreateEvent = (e) => {
@@ -53,6 +58,17 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     if(!title){
       return;
     }
+
+    //alert("checking if a massage lenght is selected")
+    //alert(hasSelectLenght)
+    if(!hasSelectLenght){
+      alert("Please select a lenght for the massage before creating booking")
+      //alert(hasSelectLenght)
+      return
+    }
+    hasSelectLenght = false
+
+
     ///////////////////////////////////testing
     var userEmail = "default testing"
     if(!user){
@@ -62,6 +78,10 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }else{
       userEmail = user.email
     }
+    //Add a flag to make sure a lenght is selected
+    
+
+
     //////////////////////////////////testing
     //remember to fix the useremail below
     try {
