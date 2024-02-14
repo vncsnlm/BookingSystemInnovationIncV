@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CreateEventPopUp from "./CreateEventPopup";
 import { setEventData } from "redux/events/eventsSlice";
 import DeleteEventPopup from "./DeleteEventPopup";
+import UpdateEventPopup from "./UpdateEventPopup";
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const locales = {
@@ -155,10 +156,10 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
       />
 
       <CreateEventPopUp open={openDialog} handleClose={handleDialogClose} />
-      <DeleteEventPopup
+      <UpdateEventPopup
         open={openRemoveDialog}
         handleClose={handleRemoveDialogClose}
-        event={data}
+        event_main={data}
       />
     </>
   );
