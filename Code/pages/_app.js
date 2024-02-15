@@ -11,6 +11,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Image from 'next/image';
 
 
+//import "../pages/homepage/HomePages.css"
+
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>

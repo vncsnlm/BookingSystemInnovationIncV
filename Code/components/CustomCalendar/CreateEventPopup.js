@@ -21,15 +21,17 @@ const mapState = ({ eventsData }) => ({
 
 
 const CreateEventPopUp = ({ handleClose, open }) => {
+  const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
+  //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
-  var endTimeAndDate = event.end;
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
-  var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
-  //const [massageLenght, setMassageLenght] = useState(30);
+  const [massageLenght, setMassageLenght] = useState(30);
   const dispatch = useDispatch();
 
   const { user, isLoading } = useUser();
@@ -38,12 +40,18 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     //alert(length+0)
     //alert(`You change the lenght of the massage to ${length}`);
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    endTimeAndDate = new Date(startTimeAndDate);//Reset time
-    endTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    const resetTimeAndDate = new Date(startTimeAndDate);//Reset time
+    resetTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    setEndTimeAndDate(resetTimeAndDate)
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //setMassageLenght(length);
-    to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    //alert(to_time)//This give the previous time, not the new set time
+    setMassageLenght(length)
     //event.end = endTimeAndDate;
+    
+    setHasSelectLenght(true)//There is a delay to the change
+    alert("You selected a massage lenght")
   };
 
   const handleCreateEvent = (e) => {
@@ -51,10 +59,37 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     if(!title){
       return;
     }
+
+    //alert("checking if a massage lenght is selected")
+    //alert(hasSelectLenght)//!hasSelectLenght
+    if(!hasSelectLenght){//Can only pass if true
+      alert("Please select a lenght for the massage before creating booking")
+      //alert(hasSelectLenght)
+      return
+    }
+    setHasSelectLenght(false)
+
+
+    ///////////////////////////////////testing
+    var userEmail = "default testing"
+    if(!user){
+      alert("sign in")
+      userEmail = "not_signed_in"
+      alert(userEmail)
+    }else{
+      userEmail = user.email
+    }
+    //Add a flag to make sure a lenght is selected
+    
+
+
+    //////////////////////////////////testing
+    //remember to fix the useremail below
     try {
       const schema = {
         title: title,
         description: "",
+        user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
         start: startTimeAndDate,
         end: endTimeAndDate,
@@ -63,13 +98,21 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       if(!user){
         alert("Your not logged in, please log in")
         //Turning it off for easier development
-        //schema.description = user;
-
-        //This breaks it
-        //alert("Schema change")
+        //return
+      }else{
+        //testing
+        //alert(user.email)
+        //alert(schema.user)
       }
-      //delete schema.description
-      //schema.description = user;
+      
+
+      //Booking verification here
+      if(1==1){
+        if(endTimeAndDate<startTimeAndDate){
+          alert("Somehow the end time is after the start, please select a booking lenght to correct")
+          return
+        }
+      }
 
       const url = "/api/events";
       fetch(url, {
@@ -89,6 +132,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }
     handleClose();
   };
+
+  const handleCloseAndReset = (e) => {
+    setHasSelectLenght(false)
+    handleClose()
+  }
 
   return (
     <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
@@ -110,8 +158,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           fullWidth
           required
           sx={{ marginTop: "16px" }}
-          placeholder="Title"
-          label="Title"
+          placeholder="Your name"
+          label="Your name"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -152,7 +200,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           </div>
         </div>
         <div>
-        <div>Change start time</div>
+        
             <div>Change duration
               <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
                 {potentialLenght.map((item) => (
@@ -170,7 +218,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
                 ))}
               </div>
             <div>
-              Selected color: <b>insert selected lenght</b>
+              Selected lenght: <b>{massageLenght} minutes</b>
             </div>
             </div>
         </div>
