@@ -20,6 +20,12 @@ import {
 
 export default function Home() {
   const { user, isLoading } = useUser();
+  function alertUser(){
+    if(user){
+      alert(user.email)
+    }
+  }
+
   return (
     <div>
       <Head>
@@ -31,10 +37,10 @@ export default function Home() {
       <div>
         <div>Hello</div>
         <a
-                    href="/api/auth/login"
-                    className="btn btn-primary btn-margin"
-                    tabIndex={0}
-                    testId="navbar-login-desktop">
+          href="/api/auth/login"
+          className="btn btn-primary btn-margin"
+          tabIndex={0}
+          testId="navbar-login-desktop">
           Log in here
         </a>
         <br/>
@@ -54,7 +60,8 @@ export default function Home() {
           Log out
         </a>
       </div>
-      <a href="/booking">Go create a booking</a>      
+      <a href="/booking">Go create a booking</a>    
+      <button onClick={alertUser}>Who?</button>  
     </div>
   );
 }

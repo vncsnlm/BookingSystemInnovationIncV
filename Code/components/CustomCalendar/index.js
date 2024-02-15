@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CreateEventPopUp from "./CreateEventPopup";
 import { setEventData } from "redux/events/eventsSlice";
 import DeleteEventPopup from "./DeleteEventPopup";
+import UpdateEventPopup from "./UpdateEventPopup";
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const locales = {
@@ -30,7 +31,15 @@ const localizer = dateFnsLocalizer({
 
 const customDayPropGetter = (date) => {
   const currentDate = new Date();
-  if (date < currentDate)
+  const lastBookableDate = new Date()
+  lastBookableDate.setDate(currentDate.getDate() + 14);//The 14 here represents the number of days after today that can be booked.
+  
+  //console.log('Current Date:', currentDate);
+  //console.log('Last Bookable Date:', lastBookableDate);
+  console.log('Selected Date:', date);
+  
+  if ((date < currentDate)){//) || (lastBookableDate < date)
+    console.log('Date is before or equal to current date');
     return {
       className: "disabled-day",
       style: {
@@ -38,7 +47,20 @@ const customDayPropGetter = (date) => {
         background: "rgba(184, 184, 184, 0.1)",
       },
     };
-  else return {};
+  }
+
+  if (lastBookableDate < date){//Limit how long before the customer is allowed to book, and and number of day away that are open, if needed.
+  console.log('Date is after last bookable date');
+  return {
+    className: "disabled-day",
+    style: {
+      cursor: "not-allowed",
+      background: "rgba(184, 184, 184, 0.1)",
+    },
+  };
+  }
+
+  return {};
 };
 
 const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
@@ -134,10 +156,10 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
       />
 
       <CreateEventPopUp open={openDialog} handleClose={handleDialogClose} />
-      <DeleteEventPopup
+      <UpdateEventPopup
         open={openRemoveDialog}
         handleClose={handleRemoveDialogClose}
-        event={data}
+        event_main={data}
       />
     </>
   );
