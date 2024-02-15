@@ -25,7 +25,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
-  var endTimeAndDate = event.end;
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
@@ -40,8 +40,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     //alert(length+0)
     //alert(`You change the lenght of the massage to ${length}`);
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    endTimeAndDate = new Date(startTimeAndDate);//Reset time
-    endTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    const resetTimeAndDate = new Date(startTimeAndDate);//Reset time
+    resetTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    setEndTimeAndDate(resetTimeAndDate)
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
@@ -104,6 +105,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
         //alert(schema.user)
       }
       
+
+      //Booking verification here
       if(1==1){
         if(endTimeAndDate<startTimeAndDate){
           alert("Somehow the end time is after the start, please select a booking lenght to correct")

@@ -22,3 +22,5 @@ working on limited the number of days after the current day the user is allowed 
 not working in customcomputer/index.js yet
 
 there is problem with hasselectmassagelenght in create eventpopup, if user select a lenght, select a lenght close and selects another
+
+there is some problem with the create booking, with need to select the lenght twice, otherwise wokring

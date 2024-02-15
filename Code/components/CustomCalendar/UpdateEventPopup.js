@@ -56,6 +56,11 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       });
   };
 
+  const testInfo = () =>{
+    alert(event_main._id);
+    alert(event_main.title)
+  }
+
   const handleUpdateEvent = () =>{
     //this will update the bookings
   }
@@ -188,7 +193,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             display: "flex",
           }}
         >
-          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
+          <PrimaryButton title={`Confirm`} onClick={testInfo}>
             Confirm
           </PrimaryButton>
         </div>
@@ -197,6 +202,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   );
 };
 
+//handleRemoveEvent
 export default UpdateEventPopup;
 
 const colorsList = [
