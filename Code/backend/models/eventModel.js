@@ -16,6 +16,8 @@ const eventSchema = new Schema(
       type: Date,
       required: true,
     },
+    user: String,
+    status: String,
     description: String,
     timezone: String,
     start_date: String,

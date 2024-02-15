@@ -1,8 +1,26 @@
 need wokring delete button
 
+add an update button that allows change, and potential delete
+
 admin page to select when user is allowed to book
 also system to prevent bookings from having conflicting times
 
 add an update button
 
-find way to update description and schema with user idenifier
+might need to change user idenifier
+
+add some where in api that will check if user is admin
+it should be done in back/api and store on mongodb
+it should only sure admin information if user is admin,
+
+if client logs in, the event should only show their, non bookable and active bookings.
+user email is currently being saved to new booking, can use that to check in api or backend
+
+may wnat to create session ids, we can not only use email as that is a security risk
+
+working on limited the number of days after the current day the user is allowed to book
+not working in customcomputer/index.js yet
+
+there is problem with hasselectmassagelenght in create eventpopup, if user select a lenght, select a lenght close and selects another
+
+there is some problem with the create booking, with need to select the lenght twice, otherwise wokring
