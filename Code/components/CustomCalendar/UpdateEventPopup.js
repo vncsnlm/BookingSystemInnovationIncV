@@ -27,7 +27,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
   var startTimeAndDate = event_main.start;
-  var endTimeAndDate = event_main.end;
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main.end);
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
@@ -59,6 +59,9 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const testInfo = () =>{
     alert(event_main._id);
     alert(event_main.title)
+    alert(event_main.start)
+    alert(event_main.end)
+    alert(event_main.background)
   }
 
   const handleUpdateEvent = () =>{

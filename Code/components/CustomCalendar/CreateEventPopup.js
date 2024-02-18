@@ -107,12 +107,16 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       
 
       //Booking verification here
-      if(1==1){
-        if(endTimeAndDate<startTimeAndDate){
-          alert("Somehow the end time is after the start, please select a booking lenght to correct")
-          return
-        }
+      
+      if(schema.end<schema.start){
+        alert("Somehow the end time is after the start, please select a booking lenght to correct")
+        return
       }
+      if(schema.background = null){
+        alert("status/backgound colour not selected")
+      }
+      
+      
 
       const url = "/api/events";
       fetch(url, {
