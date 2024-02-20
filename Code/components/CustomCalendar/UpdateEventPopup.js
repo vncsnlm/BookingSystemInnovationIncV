@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -26,15 +26,31 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
   //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
-  var startTimeAndDate = event_main.start;
+  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main.start);
   const [endTimeAndDate, setEndTimeAndDate] = useState(event_main.end);
-  var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
-  const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
+  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+  const [formattedStartDate, setFormattedStartDate] = useState(startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy "));
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+  //console.log("event_main.title:", event_main.title); need to reset the value with useEffect when event_main is updated
   const [title, setTitle] = useState(event_main.title);
   const [backgroundColor, setBackgroundColor] = useState(event_main.background);
   const [massageLenght, setMassageLenght] = useState(30);
   //const dispatch = useDispatch();
+
+  //Reset values if event_main is changed or being reassigned
+  useEffect(() => {
+    if (event_main) {
+      setStartTimeAndDate(event_main.start);
+      setEndTimeAndDate(event_main.end);
+      setFromTime(event_main.start && format(event_main.start, 'hh:mma'));
+      setFormattedStartDate(
+        event_main.start && format(event_main.start, 'eeee, MMMM dd, yyyy ')
+      );
+      setToTime(event_main.end && format(event_main.end, 'hh:mma'));
+      setTitle(event_main.title);
+      setBackgroundColor(event_main.background);
+    }
+  }, [event_main]);
 
   const handleRemoveEvent = () => {
     const data = {
@@ -56,9 +72,10 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       });
   };
 
-  const testInfo = () =>{
+  const testInfo = () =>{//All data should be working now
     alert(event_main._id);
     alert(event_main.title)
+    alert(title)
     alert(event_main.start)
     alert(event_main.end)
     alert(event_main.background)
@@ -91,7 +108,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           placeholder="Your name"
           label="Your name"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => setTitle(e.target.value)/*alert("testing")*/}
         />
         <div>
           <div style={{ paddingTop: "16px" }}>
