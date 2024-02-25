@@ -26,6 +26,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
   //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
+  const [ID, setID] = useState(event_main._id)//To save goto
   const [startTimeAndDate, setStartTimeAndDate] = useState(event_main.start);
   const [endTimeAndDate, setEndTimeAndDate] = useState(event_main.end);
   const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
@@ -53,32 +54,32 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   }, [event_main]);
 
   const handleRemoveEvent = () => {
-    const data = {
-      id: event_main._id,
-    };
-    fetch("/api/events", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        handleClose();
-
-        dispatch(fetchEventsStart());
-      });
+    if (ID) {
+      const data = {
+        id: ID,
+      };
+      fetch("/api/events", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          handleClose();
+          dispatch(fetchEventsStart());
+        });
+    }
   };
 
   const testInfo = () =>{//All data should be working now
     alert(event_main._id);
-    alert(event_main.title)
-    alert(title)
-    alert(event_main.start)
-    alert(event_main.end)
-    alert(event_main.background)
+    //alert(event_main.title)
+    //alert(title)
+    //alert(event_main.start)
+    //alert(event_main.end)
+    //alert(event_main.background)
   }
 
   const handleUpdateEvent = () =>{
@@ -213,7 +214,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             display: "flex",
           }}
         >
-          <PrimaryButton title={`Confirm`} onClick={testInfo}>
+          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
             Confirm
           </PrimaryButton>
         </div>
