@@ -55,24 +55,29 @@ const createEvent = async (req, res) => {
 
 // delete a Event
 const deleteEvent = async (req, res) => {
-  const { _id } = req.body;
-  console.log("Checking if event is eligible for deletion")
+  try{
+    const { _id } = req.body;
+    console.log("Checking if event is eligible for deletion")
 
-  // console.log({ body: req.body, id: req.body.id });
-  if (!mongoose.Types.ObjectId.isValid(_id)) {
-    console.log("Error")
-    return res.status(400).json({
-      error: "Invalid ObjectId provided",
-    });
+    // console.log({ body: req.body, id: req.body.id });
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      console.log("Error")
+      return res.status(400).json({
+        error: "Invalid ObjectId provided",
+      });
+    }
+
+    const event = await Event.findOneAndDelete({ _id: _id });
+
+    if (!event) {
+      return res.status(400).json({ error: "No such Event" });
+    }
+
+    res.status(200).json(event);
+  }catch (error) {
+    console.error("Error in deleteEvent:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  const event = await Event.findOneAndDelete({ _id: _id });
-
-  if (!event) {
-    return res.status(400).json({ error: "No such Event" });
-  }
-
-  res.status(200).json(event);
 };
 
 // update a Event
