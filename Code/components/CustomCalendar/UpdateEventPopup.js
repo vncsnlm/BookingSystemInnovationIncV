@@ -55,14 +55,22 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   }, [event_main]);
 
   const handleRemoveEvent = () => {
-    alert(ID)
+    //alert(ID)//Ensure ID is defined
     if (ID) {
-      const data = { _id: ID, title: title, start: startTimeAndDate, end: endTimeAndDate };
-
-      alert(data)
-      console.log(data)
-  
-      fetch("/api/events", {
+      alert("Event ID is defined");
+      const data = { 
+        _id: ID,
+        title: title, 
+        start: startTimeAndDate, 
+        end: endTimeAndDate,
+        background: backgroundColor,
+        description: event_main.description+" delete event by user ",//I start using the description event data storage
+      };
+      //alert(data)
+      //console.log(data)
+      //////////////////////////here
+      const url = "/api/events";
+      fetch(url, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -70,14 +78,18 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
         body: JSON.stringify(data),
       })
         .then((res) => {
+          //console.log("Sending data")
+          alert(res.ok)//Check if is something wrong with the res 
+          //console.log("Response")
           if (!res.ok) {
+            alert("Error")
             throw new Error(`HTTP error! Status: ${res.status}`);
           }
           return res.json();
         })
         .then((json) => {
           handleClose();
-          dispatch(fetchEventsStart());
+          dispatch(fetchEventsStart({ url: "/api/events" }));
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -276,7 +288,7 @@ const colorsList = [
   " #420b40",
   "#1fad96",
   "#3538ed",
-  " #1c474a",
+  "#1c474a",
   "#32bb30",
   "#cae958",
   "#dc3e09",

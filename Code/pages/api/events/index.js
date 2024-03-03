@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       await updateEvent(req, res);
       break;
     default:
-      console.log("Unknown")
+      console.log("Unknown request")
       res.status(400).json({ success: false });
       break;
   }

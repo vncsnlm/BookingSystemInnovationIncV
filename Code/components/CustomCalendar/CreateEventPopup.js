@@ -88,7 +88,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     try {
       const schema = {
         title: title,
-        description: "",
+        description: "Booking created by user "+String(userEmail), //I start using the description event data storage, change email with user id or something later
         user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
         start: startTimeAndDate,
@@ -104,10 +104,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
         //alert(user.email)
         //alert(schema.user)
       }
-      
 
       //Booking verification here
-      
       if(schema.end<schema.start){
         alert("Somehow the end time is after the start, please select a booking lenght to correct")
         return
@@ -115,9 +113,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       if(schema.background = null){
         alert("status/backgound colour not selected")
       }
-      
-      
-
+    
       const url = "/api/events";
       fetch(url, {
         method: "POST",
