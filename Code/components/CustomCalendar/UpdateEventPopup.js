@@ -57,13 +57,15 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const handleRemoveEvent = () => {
     //alert(ID)//Ensure ID is defined
     if (ID) {
-      alert("Event ID is defined");
+      //alert("Event ID is defined");
       const data = { 
-        _id: ID,
-        title: title, 
+        //_id: ID,
+        title: title,
+        status: "Delete", 
         start: startTimeAndDate, 
         end: endTimeAndDate,
         background: backgroundColor,
+        user: event_main.user,
         description: event_main.description+" delete event by user ",//I start using the description event data storage
       };
       //alert(data)
@@ -71,7 +73,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       //////////////////////////here
       const url = "/api/events";
       fetch(url, {
-        method: "DELETE",
+        method: "POST",//USing post work, but update and delete are not
         headers: {
           "Content-Type": "application/json",
         },

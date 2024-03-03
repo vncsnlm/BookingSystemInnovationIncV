@@ -88,7 +88,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     try {
       const schema = {
         title: title,
-        description: "Booking created by user "+String(userEmail), //I start using the description event data storage, change email with user id or something later
+        status: "New",
+        description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
         user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
         start: startTimeAndDate,
