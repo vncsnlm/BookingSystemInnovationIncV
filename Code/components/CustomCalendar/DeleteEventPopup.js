@@ -1,32 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { FormControlLabel, Radio, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import BaseDialog from "components/Common/Dialog";
 import { fetchEventsStart } from "redux/events/eventsSlice";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 
-const DeleteEventPopup = ({ event, open, handleClose }) => {
+const DeleteEventPopup = ({ target_event, open, handleClose }) => {
   const dispatch = useDispatch();
+  const [id, setID] = useState(target_event ? target_event._id : null);
+
+  useEffect(() => {
+    if (target_event) {
+      setID(target_event._id);
+    }
+  }, [target_event]);
+
+  const getID = () => {
+    if (id) {
+      alert(id);
+    } else {
+      alert("Event ID is undefined");
+    }
+  };
 
   const handleRemoveEvent = () => {
-    const data = {
-      id: event._id,
-    };
-    fetch("/api/events", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        handleClose();
-
-        dispatch(fetchEventsStart());
-      });
+    if (target_event) {
+      const data = {
+        id: target_event._id,
+      };
+      fetch("/api/events", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          handleClose();
+          dispatch(fetchEventsStart());
+        });
+    }
   };
 
   return (
@@ -52,7 +66,7 @@ const DeleteEventPopup = ({ event, open, handleClose }) => {
             display: "flex",
           }}
         >
-          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
+          <PrimaryButton title={`Confirm`} onClick={getID}>
             Confirm
           </PrimaryButton>
         </div>
