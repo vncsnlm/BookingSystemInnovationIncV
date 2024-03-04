@@ -41,17 +41,25 @@ export default async function handler(req, res) {
       break;
     case "POST":
       //console.log("Post")
-      console.log(res.status)
-      console.log(res._id)
-      if(res.status == "Update"){
+      
+      ///////////////////////////Flag
+      
+      //console.log(req.body.status)//Get this wokring and then updates should work
+      const { status } = req.body;
+      console.log("Here is status")
+      console.log(status)
+      //console.log(res)
+      
+      if(status == "Update"){
         console.log("Update")
         await updateEvent(req, res);
         break;
-      }else if(res.status == "Delete"){
+      }else if(status == "Delete"){
         console.log("Update")
         await deleteEvent(req, res);
         break;
       }
+      ///////////////////////////////////Flag
       await createEvent(req, res);
       break;
     case "DELETE":

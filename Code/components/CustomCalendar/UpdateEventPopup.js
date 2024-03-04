@@ -59,7 +59,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     if (ID) {
       //alert("Event ID is defined");
       const data = { 
-        //_id: ID,
+        change_id: ID,
         title: title,
         status: "Delete", 
         start: startTimeAndDate, 
