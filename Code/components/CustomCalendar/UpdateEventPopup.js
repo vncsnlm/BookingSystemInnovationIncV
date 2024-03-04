@@ -127,7 +127,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     if (ID) {
       //alert("Sending command to delete")
       const data = {
-        id: ID,
+        change_id: ID,
+        status: "Update",
         title: title,
         start: startTimeAndDate,
         end: endTimeAndDate,
@@ -136,7 +137,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       };
       //alert("Sending command to delete")
       fetch("/api/events", {
-        method: "UPDATE",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -256,7 +257,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             }}
             disabled={!title}
           >
-            Confirm
+            Update
           </PrimaryButton>
         </div>
       </Container>

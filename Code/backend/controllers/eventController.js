@@ -82,14 +82,14 @@ const deleteEvent = async (req, res) => {
 
 // update a Event
 const updateEvent = async (req, res) => {
-  const { _id } = req.query;
+  const { change_id } = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(_id)) {
+  if (!mongoose.Types.ObjectId.isValid(change_id)) {
     return res.status(400).json({ error: "No such Event" });
   }
 
   const event = await Event.findOneAndUpdate(
-    { _id: _id },
+    { _id: change_id },
     {
       ...req.body,
     }
