@@ -20,7 +20,7 @@ const mapState = ({ eventsData }) => ({
 });
 
 
-const CreateEventPopUpAdmin = ({ handleClose, open }) => {
+const CreateEventPopUp = ({ handleClose, open }) => {
   var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
   var [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
@@ -118,6 +118,7 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        {/*Replace following div with massage type selector*/}
         <div>
           <div style={{ paddingTop: "16px" }}>
             <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
@@ -204,7 +205,7 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
   );
 };
 
-export default CreateEventPopUpAdmin;
+export default CreateEventPopUp;
 
 const colorsList = [
   "#624b4b",

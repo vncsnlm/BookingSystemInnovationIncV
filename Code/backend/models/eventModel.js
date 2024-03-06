@@ -26,6 +26,7 @@ const eventSchema = new Schema(
     end_time: String,
     background: String,
     change_id: String,
+    massage_type: String,
   },
   { timestamps: true, _id: true }
 );

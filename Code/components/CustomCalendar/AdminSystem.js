@@ -10,7 +10,8 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import { useDispatch, useSelector } from "react-redux";
 import CreateEventPopUp from "./CreateEventPopupAdmin";
 import { setEventData } from "redux/events/eventsSlice";
-import DeleteEventPopup from "./DeleteEventPopup";
+//import DeleteEventPopup from "./DeleteEventPopup";
+import UpdateEventPopup from "./AdminUpdateEventPopup";
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const locales = {
@@ -28,6 +29,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+//This decide if a day is allowed to be selected or not it seems.
 const customDayPropGetter = (date) => {
   const currentDate = new Date();
   if (date < currentDate)
@@ -111,6 +113,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
 
   return (
     <>
+      <div className="">Admin sections</div>
       <DragAndDropCalendar
         ref={calendarRef}
         localizer={localizer}
@@ -134,10 +137,10 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
       />
 
       <CreateEventPopUp open={openDialog} handleClose={handleDialogClose} />
-      <DeleteEventPopup
+      <UpdateEventPopup
         open={openRemoveDialog}
         handleClose={handleRemoveDialogClose}
-        event={data}
+        event_main={data}
       />
     </>
   );
