@@ -294,7 +294,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
         </div>
       <div>
         <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
-          Do you really want to delete this event?
+          Do you really want to cancel this event?
         </Typography>
 
         <div
@@ -307,6 +307,9 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             Cancel event
           </PrimaryButton>
         </div>
+        <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
+          Do you really want to delete this event?
+          </Typography>
         <div
           style={{
             justifyContent: "center",
