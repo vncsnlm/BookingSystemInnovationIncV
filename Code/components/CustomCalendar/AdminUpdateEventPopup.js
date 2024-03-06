@@ -1,4 +1,4 @@
-//To update event
+//Needs admin tools here
 import React from "react";
 import {
   Container,
@@ -51,11 +51,9 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       setToTime(event_main.end && format(event_main.end, 'hh:mma'));
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
-      //setMassageLenght(event_main.lenght);
     }
   }, [event_main]);
 
-  //No longer need in this section, can be used in admin side
   const handleRemoveEvent = () => {
     //alert(ID)//Ensure ID is defined
     if (ID) {
@@ -101,6 +99,15 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     }
   };
 
+  const testInfo = () =>{//All data should be working now
+    alert(ID);
+    //alert(event_main.title)
+    //alert(title)
+    //alert(event_main.start)
+    //alert(event_main.end)
+    //alert(event_main.background)
+  }
+
   const handleCancelEvent = () =>{
     try{
       if (ID) {
@@ -132,14 +139,6 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       console.log(error);
     }
   }
-  const testInfo = () =>{//All data should be working now
-    alert(ID);
-    //alert(event_main.title)
-    //alert(title)
-    //alert(event_main.start)
-    //alert(event_main.end)
-    //alert(event_main.background)
-  }
 
   const changeEndTime = ({ length }) => {
     //alert(length+0)
@@ -149,7 +148,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     alert(`You change the lenght of the massage to ${newTimeAndDate}`);
     setEndTimeAndDate(newTimeAndDate)
-    setMassageLenght(length);
+    //setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
     //event.end = endTimeAndDate;
   };
@@ -305,7 +304,17 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           }}
         >
           <PrimaryButton title={`Confirm`} onClick={handleCancelEvent}>
-            Cancel booking
+            Cancel event
+          </PrimaryButton>
+        </div>
+        <div
+          style={{
+            justifyContent: "center",
+            display: "flex",
+          }}
+        >
+          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
+            Delete event
           </PrimaryButton>
         </div>
       </div>

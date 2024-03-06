@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect} from "react";
 import {
   Container,
   Dialog,
@@ -6,7 +7,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -19,33 +19,38 @@ const mapState = ({ eventsData }) => ({
   event: eventsData.event,
 });
 
-
 const CreateEventPopUp = ({ handleClose, open }) => {
   const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
   //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
+
   const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
+  
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
-  const [massageLenght, setMassageLenght] = useState(30);
+  const [massageLenght, setMassageLenght] = useState("Unselected");
   const dispatch = useDispatch();
 
   const { user, isLoading } = useUser();
 
+  //This does not work
+  //useEffect(() => {
+    //changeEndTime({ length: 30 });//Intially the lenght will always be set at 30
+  //}, [event]);
+
   const changeEndTime = ({ length }) => {
-    //alert(length+0)
     //alert(`You change the lenght of the massage to ${length}`);
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     const resetTimeAndDate = new Date(startTimeAndDate);//Reset time
     resetTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     setEndTimeAndDate(resetTimeAndDate)
-    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //alert(to_time)//This give the previous time, not the new set time
     setMassageLenght(length)
     //event.end = endTimeAndDate;
@@ -73,9 +78,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     ///////////////////////////////////testing
     var userEmail = "default testing"
     if(!user){
-      alert("sign in")
+      alert("Please sign in")
       userEmail = "not_signed_in"
-      alert(userEmail)
+      //alert(userEmail)
     }else{
       userEmail = user.email
     }
@@ -97,8 +102,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){
-        alert("Your not logged in, please log in")
-        //Turning it off for easier development
+        alert("Your not logged in, please log in")//Should probably replace alert with something else
+        //Turning it off for easier development, turn it on for production later
         //return
       }else{
         //testing
