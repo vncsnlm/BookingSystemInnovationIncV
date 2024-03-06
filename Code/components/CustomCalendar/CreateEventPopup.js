@@ -65,6 +65,12 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       return;
     }
 
+    //Back up if to make sure user selects a lenght
+    if(massageLenght == "Unselected"){
+      alert("Please select a massage lenght")
+      return
+    }
+
     //alert("checking if a massage lenght is selected")
     //alert(hasSelectLenght)//!hasSelectLenght
     if(!hasSelectLenght){//Can only pass if true
@@ -169,6 +175,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+
+        {/*}///////////////////////////////////////////Flag this div for deletion, so be replaced with massage prices and selector*/}
         <div>
           <div style={{ paddingTop: "16px" }}>
             <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
@@ -205,6 +213,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
             </Typography>
           </div>
         </div>
+        {/*}///////////////////////////////////////////Flag previous div for deletion, so be replaced with massage prices and selector*/}
+        
         <div>
         
             <div>Change duration
