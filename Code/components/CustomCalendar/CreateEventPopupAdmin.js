@@ -23,7 +23,7 @@ const mapState = ({ eventsData }) => ({
 const CreateEventPopUpAdmin = ({ handleClose, open }) => {
   var { event } = useSelector(mapState);
   var startTimeAndDate = event.start;
-  var endTimeAndDate = event.end;
+  var [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
@@ -38,9 +38,10 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
     //alert(length+0)
     //alert(`You change the lenght of the massage to ${length}`);
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    endTimeAndDate = new Date(startTimeAndDate);//Reset time
-    endTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
-    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    newTimeAndDate = new Date(startTimeAndDate);//Reset time
+    newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    alert(`You change the lenght of the massage to ${newTimeAndDate}`);
+    setEndTimeAndDate(newTimeAndDate)
     //setMassageLenght(length);
     to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
     //event.end = endTimeAndDate;
@@ -61,7 +62,8 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){
-        alert("Your not logged in, please log in")
+        //alert("Your not logged in, please log in")
+        
         //Turning it off for easier development
         //return
 

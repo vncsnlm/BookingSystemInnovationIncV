@@ -23,4 +23,6 @@ not working in customcomputer/index.js yet
 
 there is problem with hasselectmassagelenght in create eventpopup, if user select a lenght, select a lenght close and selects another
 
-there is some problem with the create booking, with need to select the lenght twice, otherwise wokring
+there is some problem with the create booking, with need to select the lenght twice, otherwise the to time is not updating
+
+if booking is cancel, it should stay on the schedulue but be red and not impact other bookings

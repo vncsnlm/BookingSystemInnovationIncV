@@ -25,6 +25,7 @@ const eventSchema = new Schema(
     start_time: String,
     end_time: String,
     background: String,
+    change_id: String,
   },
   { timestamps: true, _id: true }
 );

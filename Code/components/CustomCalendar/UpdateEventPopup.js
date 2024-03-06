@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -26,43 +26,132 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
   //more of these varibles may need to be converted to let
   var { event } = useSelector(mapState);
-  var startTimeAndDate = event_main.start;
-  var endTimeAndDate = event_main.end;
-  var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
-  const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
+  const [ID, setID] = useState(event_main._id)//To save goto
+  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main.start);
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main.end);
+  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+  const [formattedStartDate, setFormattedStartDate] = useState(startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy "));
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+  //console.log("event_main.title:", event_main.title); need to reset the value with useEffect when event_main is updated
   const [title, setTitle] = useState(event_main.title);
   const [backgroundColor, setBackgroundColor] = useState(event_main.background);
   const [massageLenght, setMassageLenght] = useState(30);
   //const dispatch = useDispatch();
 
+  //Reset values if event_main is changed or being reassigned
+  useEffect(() => {
+    if (event_main) {
+      setID(event_main._id)
+      setStartTimeAndDate(event_main.start);
+      setEndTimeAndDate(event_main.end);
+      setFromTime(event_main.start && format(event_main.start, 'hh:mma'));
+      setFormattedStartDate(
+        event_main.start && format(event_main.start, 'eeee, MMMM dd, yyyy ')
+      );
+      setToTime(event_main.end && format(event_main.end, 'hh:mma'));
+      setTitle(event_main.title);
+      setBackgroundColor(event_main.background);
+    }
+  }, [event_main]);
+
   const handleRemoveEvent = () => {
-    const data = {
-      id: event_main._id,
-    };
-    fetch("/api/events", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        handleClose();
-
-        dispatch(fetchEventsStart());
-      });
+    //alert(ID)//Ensure ID is defined
+    if (ID) {
+      //alert("Event ID is defined");
+      const data = { 
+        change_id: ID,
+        title: title,
+        status: "Delete", 
+        start: startTimeAndDate, 
+        end: endTimeAndDate,
+        background: backgroundColor,
+        user: event_main.user,
+        description: event_main.description+" delete event by user ",//I start using the description event data storage
+      };
+      //alert(data)
+      //console.log(data)
+      //////////////////////////here
+      const url = "/api/events";
+      fetch(url, {
+        method: "POST",//USing post work, but update and delete are not
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => {
+          //console.log("Sending data")
+          alert(res.ok)//Check if is something wrong with the res 
+          //console.log("Response")
+          if (!res.ok) {
+            alert("Error")
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((json) => {
+          handleClose();
+          dispatch(fetchEventsStart({ url: "/api/events" }));
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   };
 
-  const testInfo = () =>{
-    alert(event_main._id);
-    alert(event_main.title)
+  const testInfo = () =>{//All data should be working now
+    alert(ID);
+    //alert(event_main.title)
+    //alert(title)
+    //alert(event_main.start)
+    //alert(event_main.end)
+    //alert(event_main.background)
   }
+
+  const changeEndTime = ({ length }) => {
+    //alert(length+0)
+    //alert(`You change the lenght of the massage to ${length}`);
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    var newTimeAndDate = new Date(startTimeAndDate);//Reset time
+    newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    alert(`You change the lenght of the massage to ${newTimeAndDate}`);
+    setEndTimeAndDate(newTimeAndDate)
+    //setMassageLenght(length);
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    //event.end = endTimeAndDate;
+  };
 
   const handleUpdateEvent = () =>{
     //this will update the bookings
+    try{
+    if (ID) {
+      //alert("Sending command to delete")
+      const data = {
+        change_id: ID,
+        status: "Update",
+        title: title,
+        start: startTimeAndDate,
+        end: endTimeAndDate,
+        description: "",
+        background: backgroundColor,
+      };
+      //alert("Sending command to delete")
+      fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          handleClose();
+          dispatch(fetchEventsStart());
+        });
+    }
+  } catch (error) {
+    console.log(error);
+  }
   }
 
   return (
@@ -88,7 +177,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           placeholder="Your name"
           label="Your name"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => setTitle(e.target.value)/*alert("testing")*/}
         />
         <div>
           <div style={{ paddingTop: "16px" }}>
@@ -168,21 +257,11 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             }}
             disabled={!title}
           >
-            Confirm
+            Update
           </PrimaryButton>
         </div>
       </Container>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          maxWidth: "480px",
-          flexDirection: "column",
-          paddingLeft: "8px",
-          paddingRight: "8px",
-          marginTop: "16px",
-        }}
-      >
+      <div>
         <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
           Do you really want to delete this event?
         </Typography>
@@ -193,8 +272,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             display: "flex",
           }}
         >
-          <PrimaryButton title={`Confirm`} onClick={testInfo}>
-            Confirm
+          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
+            Delete event
           </PrimaryButton>
         </div>
       </div>
@@ -212,7 +291,7 @@ const colorsList = [
   " #420b40",
   "#1fad96",
   "#3538ed",
-  " #1c474a",
+  "#1c474a",
   "#32bb30",
   "#cae958",
   "#dc3e09",
