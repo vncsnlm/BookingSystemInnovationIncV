@@ -22,28 +22,26 @@ const mapState = ({ eventsData }) => ({
 
 const CreateEventPopUp = ({ handleClose, open }) => {
   var { event } = useSelector(mapState);
-  var startTimeAndDate = event.start;
-  var [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
-  var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
+  const [startTimeAndDate, setStartTimeAndDate] = useState(event.start);
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
+  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
-  var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
-  //const [massageLenght, setMassageLenght] = useState(30);
+  const [massageLenght, setMassageLenght] = useState("Unselected");
   const dispatch = useDispatch();
 
   const { user, isLoading } = useUser();
 
   const changeEndTime = ({ length }) => {
-    //alert(length+0)
-    //alert(`You change the lenght of the massage to ${length}`);
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     newTimeAndDate = new Date(startTimeAndDate);//Reset time
     newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     alert(`You change the lenght of the massage to ${newTimeAndDate}`);
     setEndTimeAndDate(newTimeAndDate)
     //setMassageLenght(length);
-    to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
     //event.end = endTimeAndDate;
   };
 
@@ -62,14 +60,22 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){
-        //alert("Your not logged in, please log in")
-        
-        //Turning it off for easier development
+        alert("Your not logged in, please log in")//Should probably replace alert with something else
+        //Turning it off for easier development, turn it on for production later
         //return
-
-        //This breaks it
-        //alert("Schema change")
+      }else{
+        //testing
+        //alert(user.email)
+        //alert(schema.user)
       }
+      //Booking verification here
+      if(schema.end<schema.start){
+        alert("Somehow the end time is after the start, please select a booking lenght to correct")
+        return
+      }
+      if(schema.background = null){
+        alert("status/backgound colour not selected")
+     }
       //delete schema.description
       //schema.description = user;
       
@@ -93,6 +99,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     handleClose();
   };
 
+  const handleCloseAndReset = (e) => {
+    setHasSelectLenght(false)
+    handleClose()
+  }
+
   return (
     <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
       <Container
@@ -104,6 +115,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           paddingBottom: "64px",
         }}
       >
+        <div>Hello</div>
         {formattedStartDate && (
           <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
             {formattedStartDate}, {from_time} - {to_time}
@@ -113,8 +125,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           fullWidth
           required
           sx={{ marginTop: "16px" }}
-          placeholder="Title"
-          label="Title"
+          placeholder="Client name or null"
+          label="Client name or null"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />

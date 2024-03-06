@@ -142,16 +142,24 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     } catch (error) {
       console.log(error);
     }
-    handleClose();
+    handleCloseAndReset();
   };
 
+  //Needs to run when the user closes by clicking outside
   const handleCloseAndReset = (e) => {
+    //Clear certain data
+    //If needed add or remove data here
     setHasSelectLenght(false)
+    //setTitle("")//Leaving like this so that it can be used later if user makes a mistake
+    setMassageLenght("Unselected")
+    //setBackgroundColor("#000000")
+
+    //Handle closing of the dialog box
     handleClose()
   }
 
   return (
-    <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
+    <BaseDialog open={open} handleClose={handleCloseAndReset} scroll={`body`} title={`Add Event`}>
       <Container
         sx={{
           background: "white",
