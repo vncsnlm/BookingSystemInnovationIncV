@@ -5,7 +5,40 @@ import mongoose from "mongoose";
 const getEvents = async (req, res) => {
   const events = await Event.find({}).sort({ createdAt: -1 });
 
+  //This will not show cancelled events
+  //const filteredEvents = events.filter((event) => event.background != "#ff0000");
+
   res.status(200).json(events);
+};
+
+// get all Events with admin information, so it can show cancelled events
+const getEventsAdmin = async (req, res) => {
+  const events = await Event.find({}).sort({ createdAt: -1 });
+
+  //Admin should be able to see all events, regardless if cancelled or not
+  //const filteredEvents = events.filter((event) => event.background != "#ff0000");
+
+  res.status(200).json(events);
+};
+
+// get all Events but remove all names from them
+const getEventsByUser = async (req, res) => {
+  const events = await Event.find({}).sort({ createdAt: -1 });
+  
+  //This will show cancelled events, but should be changed to show user cancelled events
+  //const filteredEvents = events.filter((event) => event.background != "#ff0000");
+
+  res.status(200).json(events);
+};
+
+//Show only booked times, probably best if user not logged in
+const getEventsGeneral = async (req, res) => {
+  const events = await Event.find({}).sort({ createdAt: -1 });
+
+  //This will not show cancelled events
+  const filteredEvents = events.filter((event) => event.background != "#ff0000");
+
+  res.status(200).json(filteredEvents);
 };
 
 // get a single Event

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+//Find how get all events from database works, and change it to send user ID
 
 const initialState = {
   event: {},

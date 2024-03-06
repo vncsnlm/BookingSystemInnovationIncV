@@ -45,12 +45,30 @@ export default async function handler(req, res) {
     case "POST":
       //console.log("Post")
       //console.log(req.body.status)//Get this wokring and then updates should work
-      const { status } = req.body;
+      const { status, user } = req.body;
       //console.log("Here is status")
       console.log(status)
       //console.log(res)
       if(status == "Update" || status == "Cancel"){
         console.log("Update")
+
+        //Basic verify the incoming data
+        //Basic authenication at this stage, deactivate as not needed in development
+        if(!user){
+          res.status(400).json({ success: false });
+          break
+        }
+        if(user == "" || user == undefined){
+          res.status(400).json({ success: false });
+          break
+        }
+        //Basic authenication at this stage, need to check against valid user ID
+        if(user == "not_signed_in" || user == "___default"){
+          //res.status(400).json({ success: false });
+          //break
+        }
+
+        //await getEvent(req, res);put ID and double check if it is cancelled
         await updateEvent(req, res);
         break;
       }else if(status == "Delete"){

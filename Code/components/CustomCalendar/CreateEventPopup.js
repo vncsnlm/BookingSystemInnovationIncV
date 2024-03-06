@@ -82,7 +82,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
 
     ///////////////////////////////////testing
-    var userEmail = "default testing"
+    var userEmail = "___default"
     if(!user){
       alert("Please sign in")
       userEmail = "not_signed_in"
