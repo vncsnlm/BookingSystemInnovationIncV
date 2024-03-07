@@ -50,6 +50,15 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     if(!title){
       return;
     }
+
+    var userEmail = "___default"
+    if(!user){
+      alert("Please sign in")
+      userEmail = "not_signed_in"
+    }else{
+      userEmail = user.email
+    }
+
     try {
       const schema = {
         title: title,

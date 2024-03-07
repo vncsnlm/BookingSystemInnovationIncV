@@ -88,6 +88,7 @@ const createEvent = async (req, res) => {
 
 // delete a Event
 const deleteEvent = async (req, res) => {
+  //console.log("Trying to delete event")
   try{
     const { change_id } = req.body;
     console.log("Checking if event is eligible for deletion")
@@ -115,6 +116,7 @@ const deleteEvent = async (req, res) => {
 
 // update a Event
 const updateEvent = async (req, res) => {
+  console.log("Trying to updating event")
   const { change_id } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(change_id)) {

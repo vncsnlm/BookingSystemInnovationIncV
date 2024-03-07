@@ -1,4 +1,4 @@
-//Needs admin tools here
+//To update event
 import React from "react";
 import {
   Container,
@@ -51,9 +51,11 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       setToTime(event_main.end && format(event_main.end, 'hh:mma'));
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
+      //setMassageLenght(event_main.lenght);
     }
   }, [event_main]);
 
+  //No longer need in this section, can be used in admin side
   const handleRemoveEvent = () => {
     //alert(ID)//Ensure ID is defined
     if (ID) {
@@ -99,15 +101,6 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     }
   };
 
-  const testInfo = () =>{//All data should be working now
-    alert(ID);
-    //alert(event_main.title)
-    //alert(title)
-    //alert(event_main.start)
-    //alert(event_main.end)
-    //alert(event_main.background)
-  }
-
   const handleCancelEvent = () =>{
     try{
       if (ID) {
@@ -138,6 +131,14 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     } catch (error) {
       console.log(error);
     }
+  }
+  const testInfo = () =>{//All data should be working now
+    alert(ID);
+    //alert(event_main.title)
+    //alert(title)
+    //alert(event_main.start)
+    //alert(event_main.end)
+    //alert(event_main.background)
   }
 
   const changeEndTime = ({ length }) => {
@@ -304,20 +305,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           }}
         >
           <PrimaryButton title={`Confirm`} onClick={handleCancelEvent}>
-            Cancel event
-          </PrimaryButton>
-        </div>
-        <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
-          Do you really want to delete this event?
-          </Typography>
-        <div
-          style={{
-            justifyContent: "center",
-            display: "flex",
-          }}
-        >
-          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
-            Delete event
+            Cancel booking
           </PrimaryButton>
         </div>
       </div>
