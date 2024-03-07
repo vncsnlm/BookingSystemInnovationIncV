@@ -148,7 +148,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     alert(`You change the lenght of the massage to ${newTimeAndDate}`);
     setEndTimeAndDate(newTimeAndDate)
-    //setMassageLenght(length);
+    setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
     //event.end = endTimeAndDate;
   };

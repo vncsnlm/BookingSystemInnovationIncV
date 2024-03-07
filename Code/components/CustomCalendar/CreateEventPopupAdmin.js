@@ -36,11 +36,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    newTimeAndDate = new Date(startTimeAndDate);//Reset time
+    const newTimeAndDate = new Date(startTimeAndDate);//Reset time
     newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     alert(`You change the lenght of the massage to ${newTimeAndDate}`);
     setEndTimeAndDate(newTimeAndDate)
-    //setMassageLenght(length);
+    setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
     //event.end = endTimeAndDate;
   };
@@ -53,7 +53,9 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     try {
       const schema = {
         title: title,
-        description: "",
+        status: "New",
+        description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
+        user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
         start: startTimeAndDate,
         end: endTimeAndDate,
@@ -72,12 +74,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       if(schema.end<schema.start){
         alert("Somehow the end time is after the start, please select a booking lenght to correct")
         return
-      }
-      if(schema.background = null){
-        alert("status/backgound colour not selected")
      }
-      //delete schema.description
-      //schema.description = user;
       
 
       const url = "/api/events";
