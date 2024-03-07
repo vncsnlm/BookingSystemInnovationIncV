@@ -35,8 +35,9 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   //console.log("event_main.title:", event_main.title); need to reset the value with useEffect when event_main is updated
   const [title, setTitle] = useState(event_main.title);
   const [backgroundColor, setBackgroundColor] = useState(event_main.background);
-  const [massageLenght, setMassageLenght] = useState(30);
-  //const dispatch = useDispatch();
+  const [massageLenght, setMassageLenght] = useState("Calculating");
+
+  const { user, isLoading } = useUser();
 
   //Reset values if event_main is changed or being reassigned
   useEffect(() => {
@@ -58,15 +59,27 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const handleCancelEvent = () =>{
     try{
       if (ID) {
-        //alert("Sending command to delete")
+
+        //Save useremail, replace with another idenifier later
+        var userEmail = "___default"
+        if(!user){
+          alert("Please sign in")
+          userEmail = "not_signed_in"
+          //alert(userEmail)
+        }else{
+          userEmail = user.email
+        }
+
+        //alert("Sending command to cancel")
         const data = {
           change_id: ID,
           status: "Cancel",
           title: title,
           start: startTimeAndDate,
           end: endTimeAndDate,
-          description: "",
+          description: "Booking cancelled by user "+userEmail,
           background: "#ff0000",
+          user: userEmail,
         };
         //alert("Sending command to delete")
         fetch("/api/events", {
@@ -111,15 +124,26 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     //this will update the bookings
     try{
     if (ID) {
-      //alert("Sending command to delete")
+      //Save useremail, replace with another idenifier later
+      var userEmail = "___default"
+      if(!user){
+        alert("Please sign in")
+        userEmail = "not_signed_in"
+        //alert(userEmail)
+      }else{
+        userEmail = user.email
+      }
+
+      //alert("Sending command to update")
       const data = {
         change_id: ID,
         status: "Update",
         title: title,
         start: startTimeAndDate,
         end: endTimeAndDate,
-        description: "",
+        description: "Booking updated by user "+userEmail,
         background: backgroundColor,
+        user: userEmail,
       };
       //alert("Sending command to delete")
       fetch("/api/events", {
@@ -161,10 +185,11 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           required
           sx={{ marginTop: "16px" }}
           placeholder="Your name"
-          label="Your name"
+          //label="Your name"//No longer necessary
           value={title}
         onChange={(e) => setTitle(e.target.value)/*alert("testing")*/}
         />
+        {/*Flag below for replacement*/}
         <div>
           <div style={{ paddingTop: "16px" }}>
             <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
@@ -201,8 +226,9 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             </Typography>
           </div>
         </div>
+        {/*Flag above for replacement*/}
+
         <div>
-        
             <div>Change duration
               <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
                 {potentialLenght.map((item) => (
