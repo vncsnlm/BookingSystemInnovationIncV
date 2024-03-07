@@ -55,52 +55,6 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     }
   }, [event_main]);
 
-  //No longer need in this section, can be used in admin side
-  const handleRemoveEvent = () => {
-    //alert(ID)//Ensure ID is defined
-    if (ID) {
-      //alert("Event ID is defined");
-      const data = { 
-        change_id: ID,
-        title: title,
-        status: "Delete", 
-        start: startTimeAndDate, 
-        end: endTimeAndDate,
-        background: backgroundColor,
-        user: event_main.user,
-        description: event_main.description+" delete event by user ",//I start using the description event data storage
-      };
-      //alert(data)
-      //console.log(data)
-      //////////////////////////here
-      const url = "/api/events";
-      fetch(url, {
-        method: "POST",//USing post work, but update and delete are not
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((res) => {
-          //console.log("Sending data")
-          alert(res.ok)//Check if is something wrong with the res 
-          //console.log("Response")
-          if (!res.ok) {
-            alert("Error")
-            throw new Error(`HTTP error! Status: ${res.status}`);
-          }
-          return res.json();
-        })
-        .then((json) => {
-          handleClose();
-          dispatch(fetchEventsStart({ url: "/api/events" }));
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    }
-  };
-
   const handleCancelEvent = () =>{
     try{
       if (ID) {

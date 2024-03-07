@@ -271,8 +271,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             </div>
             </div>
         </div>
-        
-
+        {/*Save and delete buttons here*/}
         <div
           style={{
             display: "flex",
@@ -293,7 +292,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             Update booking
           </PrimaryButton>
         </div>
-      <div>
+        <div>
         <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
           Do you really want to cancel this event?
         </Typography>
@@ -308,7 +307,23 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             Cancel booking
           </PrimaryButton>
         </div>
-      </div>
+        </div>
+        <div>
+        <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
+          Do you really want to delete this event?
+        </Typography>
+
+        <div
+          style={{
+            justifyContent: "center",
+            display: "flex",
+          }}
+        >
+          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
+            Delete booking
+          </PrimaryButton>
+        </div>
+        </div>
       </Container>
     </BaseDialog>
   );
