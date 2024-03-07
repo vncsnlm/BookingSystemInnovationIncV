@@ -151,7 +151,6 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     setEndTimeAndDate(newTimeAndDate)
     setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
-    //event.end = endTimeAndDate;
   };
 
   const handleUpdateEvent = () =>{
