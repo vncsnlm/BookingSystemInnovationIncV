@@ -8,6 +8,16 @@ const getEvents = async (req, res) => {
   //This will not show cancelled events
   //const filteredEvents = events.filter((event) => event.background != "#ff0000");
 
+  //This will change all booking titles to reserved when sent, this should be goo for you if user is signed out
+  //Needs to know user ID, and then will not affact there booking
+  const filteredEvents = events.filter((event) => {
+    if ("UserID" != event.user) {
+      //event.title = "Reserved"
+    } 
+    //Changes the colour of all event to black, can used for idenification purposes
+    //event.background = "#000000";
+  });
+
   res.status(200).json(events);
 };
 

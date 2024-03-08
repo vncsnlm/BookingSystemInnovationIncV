@@ -80,8 +80,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }
     setHasSelectLenght(false)
 
-
-    ///////////////////////////////////testing
+    ///////////////////////////////////testing infromation saving
     var userEmail = "___default"
     if(!user){
       alert("Please sign in")
@@ -90,10 +89,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }else{
       userEmail = user.email
     }
-    //Add a flag to make sure a lenght is selected
     
-
-
     //////////////////////////////////testing
     //remember to fix the useremail below
     try {
@@ -171,7 +167,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       >
         {formattedStartDate && (
           <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-            {formattedStartDate}, {from_time} - {to_time}
+            {formattedStartDate}, {from_time}{/*} - {to_time}This does not display properly*/}
           </Typography>
         )}
         <TextField

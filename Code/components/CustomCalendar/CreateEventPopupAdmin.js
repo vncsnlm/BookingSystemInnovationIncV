@@ -22,8 +22,8 @@ const mapState = ({ eventsData }) => ({
 
 const CreateEventPopUp = ({ handleClose, open }) => {
   var { event } = useSelector(mapState);
-  const [startTimeAndDate, setStartTimeAndDate] = useState(event.start);
-  const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
+  var startTimeAndDate = event.start;//Here make both of these varibles var, const with useState does not work
+  var endTimeAndDate = event.end;
   const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
@@ -36,10 +36,27 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    const newTimeAndDate = new Date(startTimeAndDate);//Reset time
-    newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    const newTimeAndDate = new Date(endTimeAndDate);//Reset time
+
+    //if change lenght here
+    if(length == "+30"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
+    }else if(length == "-30"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
+    }else if(length == "+60"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
+    }else if(length == "-60"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    }else if(length == "all day"){
+      //Do both of what the below functions do
+    }else if(length == "end day"){
+      //make endTimeAndDate the end of the day
+    }else if(length == "start day"){
+      //make startTimeAndDate the start of the day
+    }
+    
     alert(`You change the lenght of the massage to ${newTimeAndDate}`);
-    setEndTimeAndDate(newTimeAndDate)
+    endTimeAndDate = newTimeAndDate;
     setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
     //event.end = endTimeAndDate;
@@ -47,13 +64,18 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const handleCreateEvent = (e) => {
     e.preventDefault();
+
+    alert(startTimeAndDate)
+    alert(endTimeAndDate)
+
     if(!title){
       return;
     }
 
+    //Save the user
     var userEmail = "___default"
     if(!user){
-      alert("Please sign in")
+      //alert("Please sign in")
       userEmail = "not_signed_in"
     }else{
       userEmail = user.email
@@ -112,6 +134,15 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   return (
     <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
+      <DialogTitle
+        style={{
+          fontSize: "21px",
+          fontWeight: "bold",
+          marginTop: "-24px",
+        }}
+      >
+        Create booking
+      </DialogTitle>
       <Container
         sx={{
           background: "white",
@@ -239,6 +270,10 @@ const colorsList = [
 ];
 const potentialLenght = [
   "all day",
+  "start day",
+  "end day",
+  "+30",
   "-30",
-  "+30"
+  "+60",
+  "-60",
 ]

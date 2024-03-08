@@ -207,8 +207,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           fullWidth
           required
           sx={{ marginTop: "16px" }}
-          placeholder="Your name"
-          label="Your name"
+          placeholder="CLient name or null"
           value={title}
         onChange={(e) => setTitle(e.target.value)/*alert("testing")*/}
         />

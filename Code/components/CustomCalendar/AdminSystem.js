@@ -10,7 +10,7 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import { useDispatch, useSelector } from "react-redux";
 import CreateEventPopUp from "./CreateEventPopupAdmin";
 import { setEventData } from "redux/events/eventsSlice";
-//import DeleteEventPopup from "./DeleteEventPopup";
+import { fetchEventsStart } from "redux/events/eventsSlice";
 import UpdateEventPopup from "./AdminUpdateEventPopup";
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
@@ -21,6 +21,7 @@ const locales = {
 let currentDate = new Date();
 let currentDay = currentDate.getDay();
 
+//Defines the start of the week
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -114,6 +115,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
   return (
     <>
       <div className="">Admin sections</div>
+      <button onClick={() => dispatch(fetchEventsStart())}>Refresh</button>{/*This is a simple button to reget the events*/}
       <DragAndDropCalendar
         ref={calendarRef}
         localizer={localizer}
