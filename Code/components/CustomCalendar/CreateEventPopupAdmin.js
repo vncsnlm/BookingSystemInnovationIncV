@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { fetchEventsStart } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
+import Grid from '@mui/material/Grid';
 
 import { useUser } from '@auth0/nextjs-auth0/client';
 
@@ -48,14 +49,24 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }else if(length == "-60"){
       newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
     }else if(length == "all day"){
+      startTimeAndDate.setHours(0)
+      startTimeAndDate.setMinutes(0)
+      endTimeAndDate.setHours(23)
+      endTimeAndDate.setMinutes(59)
       //Do both of what the below functions do
     }else if(length == "end day"){
       //make endTimeAndDate the end of the day
+      endTimeAndDate.setHours(23)
+      endTimeAndDate.setMinutes(59)
     }else if(length == "start day"){
+      startTimeAndDate.setHours(0)
+      startTimeAndDate.setMinutes(0)
       //make startTimeAndDate the start of the day
     }
+
+    //alert(endTimeAndDate);
     
-    alert(`You change the lenght of the massage to ${newTimeAndDate}`);
+    //alert(`You change the lenght of the massage to ${newTimeAndDate}`);
     endTimeAndDate = newTimeAndDate;
     setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
@@ -152,21 +163,22 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           paddingBottom: "64px",
         }}
       >
-        <div>Hello</div>
         {formattedStartDate && (
           <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
             {formattedStartDate}, {from_time} - {to_time}
           </Typography>
         )}
-        <TextField
-          fullWidth
-          required
-          sx={{ marginTop: "16px" }}
-          placeholder="Client name or null"
-          label="Client name or null"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <div>
+          <TextField
+            required
+            sx={{ marginTop: "16px" }}
+            placeholder="Client name or reserved"
+            label="Client name or reserved"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <button onClick={() => setTitle("Reserved")}>Default</button>{/*Make button in same line at title*/}
+        </div>
         {/*Replace following div with massage type selector*/}
         <div>
           <div style={{ paddingTop: "16px" }}>
