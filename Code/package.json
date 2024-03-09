@@ -35,5 +35,9 @@
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.1",
     "redux-thunk": "^2.4.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^20.11.25"
   }
 }

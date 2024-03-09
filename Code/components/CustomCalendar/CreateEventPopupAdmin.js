@@ -177,7 +177,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <button onClick={() => setTitle("Reserved")}>Default</button>{/*Make button in same line at title*/}
+          <button onClick={() => setTitle("Reserved")}>Default</button>{/*Make button in same line at title, and is aligned horizontally*/}
         </div>
         {/*Replace following div with massage type selector*/}
         <div>
