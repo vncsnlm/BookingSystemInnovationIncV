@@ -80,6 +80,21 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }
     setHasSelectLenght(false)
 
+    //Verify that the event does not conflict with other events in the database
+    //if(true){
+      //const allEvents = fetchEventsStart({ url: "/api/events" })
+
+      /*
+      allEvents.forEach((singleEvent) => {
+        //determine here
+        if(singleEvent.startTimeAndDate < startTimeAndDate &&
+          singleEvent.endTimeAndDate > endTimeAndDate){
+          alert("This event conflicts with another event")
+          return;
+        }
+      });*/
+    //}
+
     ///////////////////////////////////testing infromation saving
     var userEmail = "___default"
     if(!user){

@@ -76,8 +76,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const handleCreateEvent = (e) => {
     e.preventDefault();
 
-    alert(startTimeAndDate)
-    alert(endTimeAndDate)
+    //alert(startTimeAndDate)
+    //alert(endTimeAndDate)
 
     if(!title){
       return;
