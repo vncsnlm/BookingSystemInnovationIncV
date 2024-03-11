@@ -35,9 +35,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   //console.log("event_main.title:", event_main.title); need to reset the value with useEffect when event_main is updated
   const [title, setTitle] = useState(event_main.title);
   const [backgroundColor, setBackgroundColor] = useState(event_main.background);
-  const [massageLenght, setMassageLenght] = useState("Calculating");
-
-  const { user, isLoading } = useUser();
+  const [massageLenght, setMassageLenght] = useState(30);
+  //const dispatch = useDispatch();
 
   //Reset values if event_main is changed or being reassigned
   useEffect(() => {
@@ -56,30 +55,64 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     }
   }, [event_main]);
 
+  //No longer need in this section, can be used in admin side
+  const handleRemoveEvent = () => {
+    //alert(ID)//Ensure ID is defined
+    if (ID) {
+      //alert("Event ID is defined");
+      const data = { 
+        change_id: ID,
+        title: title,
+        status: "Delete", 
+        start: startTimeAndDate, 
+        end: endTimeAndDate,
+        background: backgroundColor,
+        user: event_main.user,
+        description: event_main.description+" delete event by user ",//I start using the description event data storage
+      };
+      //alert(data)
+      //console.log(data)
+      //////////////////////////here
+      const url = "/api/events";
+      fetch(url, {
+        method: "POST",//USing post work, but update and delete are not
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => {
+          //console.log("Sending data")
+          alert(res.ok)//Check if is something wrong with the res 
+          //console.log("Response")
+          if (!res.ok) {
+            alert("Error")
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((json) => {
+          handleClose();
+          dispatch(fetchEventsStart({ url: "/api/events" }));
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  };
+
   const handleCancelEvent = () =>{
     try{
       if (ID) {
-
-        //Save useremail, replace with another idenifier later
-        var userEmail = "___default"
-        if(!user){
-          alert("Please sign in")
-          userEmail = "not_signed_in"
-          //alert(userEmail)
-        }else{
-          userEmail = user.email
-        }
-
-        //alert("Sending command to cancel")
+        //alert("Sending command to delete")
         const data = {
           change_id: ID,
           status: "Cancel",
           title: title,
           start: startTimeAndDate,
           end: endTimeAndDate,
-          description: "Booking cancelled by user "+userEmail,
+          description: "",
           background: "#ff0000",
-          user: userEmail,
         };
         //alert("Sending command to delete")
         fetch("/api/events", {
@@ -118,32 +151,22 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     setEndTimeAndDate(newTimeAndDate)
     setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    //event.end = endTimeAndDate;
   };
 
   const handleUpdateEvent = () =>{
     //this will update the bookings
     try{
     if (ID) {
-      //Save useremail, replace with another idenifier later
-      var userEmail = "___default"
-      if(!user){
-        alert("Please sign in")
-        userEmail = "not_signed_in"
-        //alert(userEmail)
-      }else{
-        userEmail = user.email
-      }
-
-      //alert("Sending command to update")
+      //alert("Sending command to delete")
       const data = {
         change_id: ID,
         status: "Update",
         title: title,
         start: startTimeAndDate,
         end: endTimeAndDate,
-        description: "Booking updated by user "+userEmail,
+        description: "",
         background: backgroundColor,
-        user: userEmail,
       };
       //alert("Sending command to delete")
       fetch("/api/events", {
@@ -184,12 +207,10 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           fullWidth
           required
           sx={{ marginTop: "16px" }}
-          placeholder="Your name"
-          //label="Your name"//No longer necessary
+          placeholder="CLient name or null"
           value={title}
         onChange={(e) => setTitle(e.target.value)/*alert("testing")*/}
         />
-        {/*Flag below for replacement*/}
         <div>
           <div style={{ paddingTop: "16px" }}>
             <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
@@ -226,9 +247,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             </Typography>
           </div>
         </div>
-        {/*Flag above for replacement*/}
-
         <div>
+        
             <div>Change duration
               <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
                 {potentialLenght.map((item) => (
@@ -250,8 +270,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             </div>
             </div>
         </div>
-        
-
+        {/*Save and delete buttons here*/}
         <div
           style={{
             display: "flex",
@@ -272,7 +291,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             Update booking
           </PrimaryButton>
         </div>
-      <div>
+        <div>
         <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
           Do you really want to cancel this event?
         </Typography>
@@ -287,7 +306,23 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
             Cancel booking
           </PrimaryButton>
         </div>
-      </div>
+        </div>
+        <div>
+        <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
+          Do you really want to delete this event?
+        </Typography>
+
+        <div
+          style={{
+            justifyContent: "center",
+            display: "flex",
+          }}
+        >
+          <PrimaryButton title={`Confirm`} onClick={handleRemoveEvent}>
+            Delete booking
+          </PrimaryButton>
+        </div>
+        </div>
       </Container>
     </BaseDialog>
   );

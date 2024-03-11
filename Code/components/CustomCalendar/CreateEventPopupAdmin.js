@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { fetchEventsStart } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
+import Grid from '@mui/material/Grid';
 
 import { useUser } from '@auth0/nextjs-auth0/client';
 
@@ -20,58 +21,102 @@ const mapState = ({ eventsData }) => ({
 });
 
 
-const CreateEventPopUpAdmin = ({ handleClose, open }) => {
+const CreateEventPopUp = ({ handleClose, open }) => {
   var { event } = useSelector(mapState);
-  var startTimeAndDate = event.start;
-  var [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
-  var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
+  var startTimeAndDate = event.start;//Here make both of these varibles var, const with useState does not work
+  var endTimeAndDate = event.end;
+  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
-  var to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
   const [title, setTitle] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("#000000");
-  //const [massageLenght, setMassageLenght] = useState(30);
+  const [massageLenght, setMassageLenght] = useState("Unselected");
   const dispatch = useDispatch();
 
   const { user, isLoading } = useUser();
 
   const changeEndTime = ({ length }) => {
-    //alert(length+0)
-    //alert(`You change the lenght of the massage to ${length}`);
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    newTimeAndDate = new Date(startTimeAndDate);//Reset time
-    newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
-    alert(`You change the lenght of the massage to ${newTimeAndDate}`);
-    setEndTimeAndDate(newTimeAndDate)
-    //setMassageLenght(length);
-    to_time = endTimeAndDate && format(endTimeAndDate, "hh:mma");
+    const newTimeAndDate = new Date(endTimeAndDate);//Reset time
+
+    //if change lenght here
+    if(length == "+30"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
+    }else if(length == "-30"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
+    }else if(length == "+60"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
+    }else if(length == "-60"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    }else if(length == "all day"){
+      startTimeAndDate.setHours(0)
+      startTimeAndDate.setMinutes(0)
+      endTimeAndDate.setHours(23)
+      endTimeAndDate.setMinutes(59)
+      //Do both of what the below functions do
+    }else if(length == "end day"){
+      //make endTimeAndDate the end of the day
+      endTimeAndDate.setHours(23)
+      endTimeAndDate.setMinutes(59)
+    }else if(length == "start day"){
+      startTimeAndDate.setHours(0)
+      startTimeAndDate.setMinutes(0)
+      //make startTimeAndDate the start of the day
+    }
+
+    //alert(endTimeAndDate);
+    
+    //alert(`You change the lenght of the massage to ${newTimeAndDate}`);
+    endTimeAndDate = newTimeAndDate;
+    setMassageLenght(length);
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
     //event.end = endTimeAndDate;
   };
 
   const handleCreateEvent = (e) => {
     e.preventDefault();
+
+    //alert(startTimeAndDate)
+    //alert(endTimeAndDate)
+
     if(!title){
       return;
     }
+
+    //Save the user
+    var userEmail = "___default"
+    if(!user){
+      //alert("Please sign in")
+      userEmail = "not_signed_in"
+    }else{
+      userEmail = user.email
+    }
+
     try {
       const schema = {
         title: title,
-        description: "",
+        status: "New",
+        description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
+        user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
         start: startTimeAndDate,
         end: endTimeAndDate,
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){
-        //alert("Your not logged in, please log in")
-        
-        //Turning it off for easier development
+        alert("Your not logged in, please log in")//Should probably replace alert with something else
+        //Turning it off for easier development, turn it on for production later
         //return
-
-        //This breaks it
-        //alert("Schema change")
+      }else{
+        //testing
+        //alert(user.email)
+        //alert(schema.user)
       }
-      //delete schema.description
-      //schema.description = user;
+      //Booking verification here
+      if(schema.end<schema.start){
+        alert("Somehow the end time is after the start, please select a booking lenght to correct")
+        return
+     }
       
 
       const url = "/api/events";
@@ -93,8 +138,22 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
     handleClose();
   };
 
+  const handleCloseAndReset = (e) => {
+    setHasSelectLenght(false)
+    handleClose()
+  }
+
   return (
     <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
+      <DialogTitle
+        style={{
+          fontSize: "21px",
+          fontWeight: "bold",
+          marginTop: "-24px",
+        }}
+      >
+        Create booking
+      </DialogTitle>
       <Container
         sx={{
           background: "white",
@@ -109,15 +168,18 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
             {formattedStartDate}, {from_time} - {to_time}
           </Typography>
         )}
-        <TextField
-          fullWidth
-          required
-          sx={{ marginTop: "16px" }}
-          placeholder="Title"
-          label="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <div>
+          <TextField
+            required
+            sx={{ marginTop: "16px" }}
+            placeholder="Client name or reserved"
+            label="Client name or reserved"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <button onClick={() => setTitle("Reserved")}>Default</button>{/*Make button in same line at title, and is aligned horizontally*/}
+        </div>
+        {/*Replace following div with massage type selector*/}
         <div>
           <div style={{ paddingTop: "16px" }}>
             <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
@@ -204,7 +266,7 @@ const CreateEventPopUpAdmin = ({ handleClose, open }) => {
   );
 };
 
-export default CreateEventPopUpAdmin;
+export default CreateEventPopUp;
 
 const colorsList = [
   "#624b4b",
@@ -220,6 +282,10 @@ const colorsList = [
 ];
 const potentialLenght = [
   "all day",
+  "start day",
+  "end day",
+  "+30",
   "-30",
-  "+30"
+  "+60",
+  "-60",
 ]
