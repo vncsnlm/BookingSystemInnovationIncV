@@ -1,11 +1,5 @@
-need wokring delete button
-
-add an update button that allows change, and potential delete
-
 admin page to select when user is allowed to book
 also system to prevent bookings from having conflicting times
-
-add an update button
 
 might need to change user idenifier
 
@@ -23,6 +17,10 @@ not working in customcomputer/index.js yet
 
 there is problem with hasselectmassagelenght in create eventpopup, if user select a lenght, select a lenght close and selects another
 
-there is some problem with the create booking, with need to select the lenght twice, otherwise the to time is not updating
+there is some problem with the create booking, with need to select the lenght twice, otherwise the to time is not updating, it will be selected but not update to correct until later
 
-if booking is cancel, it should stay on the schedulue but be red and not impact other bookings
+change the handle close function to make sure that data is reset
+massage lenght also needs to be fixed, the alert is printing incorrect time, but the actual time is correct
+
+make admin page work again
+currently only delete booking works

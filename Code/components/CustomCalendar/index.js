@@ -10,8 +10,8 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import { useDispatch, useSelector } from "react-redux";
 import CreateEventPopUp from "./CreateEventPopup";
 import { setEventData } from "redux/events/eventsSlice";
-import DeleteEventPopup from "./DeleteEventPopup";
 import UpdateEventPopup from "./UpdateEventPopup";
+
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const locales = {
@@ -50,6 +50,7 @@ const customDayPropGetter = (date) => {
   }
 
   if (lastBookableDate < date){//Limit how long before the customer is allowed to book, and and number of day away that are open, if needed.
+  //This does not work, only changes colours
   console.log('Date is after last bookable date');
   return {
     className: "disabled-day",
