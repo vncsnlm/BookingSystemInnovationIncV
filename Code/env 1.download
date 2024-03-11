@@ -1,0 +1,16 @@
+#This is random string used for cookies
+AUTH0_SECRET='long_string_used_to_encrypt_sessions_to_make_communication_secure_14u0391m903c989j9uj,ASls'
+#This is the website url
+AUTH0_BASE_URL='http://localhost:3000/'
+#The login domain
+AUTH0_ISSUER_BASE_URL='https://dev-s0m58ukmiyevj58p.us.auth0.com'
+#The client ID
+AUTH0_CLIENT_ID='DA6y27dEDclFU9PSmw0DTw3WijBfmdCu'
+#The client secret
+AUTH0_CLIENT_SECRET='xpAx_0luBWtzBNe7T-7hTQ-mCLQF_vFMsnmKY6f2PJh1EBLy2Bev5Gj6bZVHyRGi'
+
+#AUTH0_AUDIENCE='https://localhost:3000'
+
+#AUTH0_SCOPE='openid profile'
+
+MONGODB_URI=mongodb+srv://saihaj:saihaj@cluster0.6n0mqay.mongodb.net/
