@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { fetchEventsStart } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
-
+//To save user information
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 const mapState = ({ eventsData }) => ({
@@ -35,12 +35,20 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const [massageLenght, setMassageLenght] = useState("Unselected");
   const dispatch = useDispatch();
 
+  //To save user information
   const { user, isLoading } = useUser();
 
-  //This does not work
-  //useEffect(() => {
-    //changeEndTime({ length: 30 });//Intially the lenght will always be set at 30
-  //}, [event]);
+  //This is used to compare if a booking conflicts with another booking
+  const allEvents = useSelector(state => state.eventsData.events);
+
+  const reloadEvents = () => {
+    const fetchData = async () => {
+      // Dispatch the action to fetch events when the component mounts
+      await dispatch(fetchEventsStart());
+    };
+
+    fetchData();
+  };
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${length}`);
@@ -78,22 +86,22 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       //alert(hasSelectLenght)
       return
     }
-    setHasSelectLenght(false)
 
     //Verify that the event does not conflict with other events in the database
-    //if(true){
-      //const allEvents = fetchEventsStart({ url: "/api/events" })
-
-      /*
-      allEvents.forEach((singleEvent) => {
-        //determine here
-        if(singleEvent.startTimeAndDate < startTimeAndDate &&
-          singleEvent.endTimeAndDate > endTimeAndDate){
-          alert("This event conflicts with another event")
+    reloadEvents();
+    alert("Checking for conflicts in database")
+    if (true) {
+      console.log(startTimeAndDate.toDateString())
+      const startTimeAndDateString = startTimeAndDate.toDateString();
+      for (let i = 0; i < allEvents.length; i++) {
+        const singleEvent = allEvents[i];
+        if (singleEvent.start === startTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
           return;
         }
-      });*/
-    //}
+      }
+    }
 
     ///////////////////////////////////testing infromation saving
     var userEmail = "___default"
@@ -104,6 +112,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }else{
       userEmail = user.email
     }
+
+    setHasSelectLenght(false)
     
     //////////////////////////////////testing
     //remember to fix the useremail below
