@@ -91,11 +91,35 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     reloadEvents();
     alert("Checking for conflicts in database")
     if (true) {
-      console.log(startTimeAndDate.toDateString())
-      const startTimeAndDateString = startTimeAndDate.toDateString();
+      console.log("checking intial time")
+      console.log(startTimeAndDate.toISOString())
+      console.log(endTimeAndDate.toISOString())
+      console.log("done checking intial time")
+      const startTimeAndDateString = startTimeAndDate.toISOString();
+      const endTimeAndDateString = endTimeAndDate.toISOString();
+
+      console.log(startTimeAndDateString)
       for (let i = 0; i < allEvents.length; i++) {
         const singleEvent = allEvents[i];
-        if (singleEvent.start === startTimeAndDateString) {
+        console.log(singleEvent.start)
+        if (singleEvent.start <= startTimeAndDateString 
+          && singleEvent.end >= endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start >= startTimeAndDateString
+          && singleEvent.end <= endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start >= startTimeAndDateString
+          && singleEvent.start <= endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        }
+        else if (singleEvent.end >= startTimeAndDateString
+          && singleEvent.end <= endTimeAndDateString) {
           console.log("conflict")
           alert("This event conflicts with another event");
           return;
