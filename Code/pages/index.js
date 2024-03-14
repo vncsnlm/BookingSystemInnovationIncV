@@ -1,10 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Head from "next/head";
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Container, Navbar, NavbarBrand, Nav, NavItem, Button } from 'reactstrap';
+import { useRouter } from 'next/router';
 
 export default function Home() {
-  const { user } = useUser();
+  const { user, error, isLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to the client page if the user is logged in
+    if (user) {
+      router.push('Code/pages/Clienthome.js'); // Replace '/client-page' with your client page path
+    }
+  }, [user, router]);
 
   const navbarStyle = {
     backgroundColor: '#D1C2D9', // Color for the navbar
@@ -81,6 +90,7 @@ export default function Home() {
             />
             <p>Hello, {user.name}</p>
             <a href="/booking" className="btn btn-primary">Go create a booking</a>
+        
           </>
         )}
         <div style={footerTextStyle}>
