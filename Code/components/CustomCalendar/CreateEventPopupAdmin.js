@@ -37,17 +37,21 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    const newTimeAndDate = new Date(endTimeAndDate);//Reset time
+    //const newTimeAndDate = new Date(endTimeAndDate);//Reset time
 
     //if change lenght here
-    if(length == "+30"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
-    }else if(length == "-30"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
-    }else if(length == "+60"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
-    }else if(length == "-60"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    if(length == "e+30"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
+    }else if(length == "e-30"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
+    }else if(length == "e+60"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
+    }else if(length == "e-60"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    }else if(length == "s+30"){
+      startTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + 30);
+    }else if(length == "s-30"){
+      startTimeAndDate.setMinutes(startTimeAndDate.getMinutes() - 30);
     }else if(length == "all day"){
       startTimeAndDate.setHours(0)
       startTimeAndDate.setMinutes(0)
@@ -61,15 +65,15 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }else if(length == "start day"){
       startTimeAndDate.setHours(0)
       startTimeAndDate.setMinutes(0)
-      //make startTimeAndDate the start of the day
     }
 
     //alert(endTimeAndDate);
     
     //alert(`You change the lenght of the massage to ${newTimeAndDate}`);
-    endTimeAndDate = newTimeAndDate;
+    //endTimeAndDate = newTimeAndDate;
     setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    setFromTime(startTimeAndDate && format(startTimeAndDate, "hh:mma"))
     //event.end = endTimeAndDate;
   };
 
@@ -165,7 +169,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       >
         {formattedStartDate && (
           <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-            {formattedStartDate}, {from_time} - {to_time}
+            {formattedStartDate}, Time: {from_time} to {to_time}
           </Typography>
         )}
         <div>
@@ -284,8 +288,10 @@ const potentialLenght = [
   "all day",
   "start day",
   "end day",
-  "+30",
-  "-30",
-  "+60",
-  "-60",
+  "e+30",
+  "e-30",
+  "e+60",
+  "e-60",
+  "s+30",
+  "s-30",
 ]
