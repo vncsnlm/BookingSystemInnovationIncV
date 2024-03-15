@@ -51,7 +51,7 @@ const Navbar = () => {
         <li style={navItemStyle}>HOURS</li>
         <li style={navItemStyle}>CONTACT US</li>
       </ul>
-      <button style={bookNowButtonStyle}>BOOK NOW</button>
+      <button style={bookNowButtonStyle} id="go-to-booking-page-from-navbar">BOOK NOW</button>
     </nav>
   );
 };
