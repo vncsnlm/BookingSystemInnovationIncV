@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect} from "react";
 import {
   Container,
   Dialog,
@@ -6,7 +7,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -34,6 +34,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const dispatch = useDispatch();
 
   const { user, isLoading } = useUser();
+
+  useEffect(() => {
+    setFromTime(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+  })
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
