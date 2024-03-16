@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 //npx playwright test
-
+//npx playwright codegen localhost:3000
 
 //This test should make sure it redirects to 404 page
 test('Test to fail api/events page', async ({ page }) => {
@@ -26,12 +26,20 @@ test('Hidden link to booking page', async ({ page }) => {
 });
 
 test('Navbar link to booking page working', async ({ page }) => {
-  await page.goto('http://127.0.0.1:3000/booking');
+  await page.goto('http://127.0.0.1:3000/');
 
   const locator = page.locator('go-to-booking-page-from-navbar');
   await locator.click();
 
   await expect(page).toHaveTitle(/Booking/);
+});
+
+test('Navbar link to booking page working alt', async ({ page }) => {
+  await page.goto('http://127.0.0.1:3000/');
+
+  await page.click('text=BOOK NOW')
+
+  await expect(page).toHaveURL('http://127.0.0.1:3000/booking')
 });
 
 test('Login button', async ({ page }) => {

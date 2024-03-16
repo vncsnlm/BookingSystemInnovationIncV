@@ -8,7 +8,7 @@ test('Title', async ({ page }) => {
   });
   
   //This test should make sure title is not fail
-  test('Test to fail title', async ({ page }) => {
+  test('Check title not fail', async ({ page }) => {
     await page.goto('http://127.0.0.1:3000');
   
     await expect(page).not.toHaveTitle(/Fail/);
