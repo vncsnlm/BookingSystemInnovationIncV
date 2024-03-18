@@ -123,11 +123,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       const schema = {
         title: title,
         status: "New",
+        start: startTimeAndDate,
+        end: event.end,
         description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
         user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
-        start: startTimeAndDate,
-        end: endTimeAndDate,
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){

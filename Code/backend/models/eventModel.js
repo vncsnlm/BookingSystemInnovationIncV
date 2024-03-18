@@ -14,7 +14,7 @@ const eventSchema = new Schema(
     },
     end: {
       type: Date,
-      required: true,
+      required: false,//Fix booking and make it required
     },
     user: String,
     status: String,
@@ -26,7 +26,7 @@ const eventSchema = new Schema(
     end_time: String,
     background: String,
     change_id: String,
-    massage_type: String,
+    massageType: String,
   },
   { timestamps: true, _id: true }
 );
