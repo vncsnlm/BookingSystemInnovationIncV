@@ -8,12 +8,12 @@ export default function Home() {
   const { user, error, isLoading } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
+ // useEffect(() => {
     // Redirect to the client page if the user is logged in
-    if (user) {
-      router.push('Code/pages/Clienthome.js'); // Replace '/client-page' with your client page path
-    }
-  }, [user, router]);
+    //if (user) {
+     // router.push('Code/pages/Clienthome.js'); // Replace '/client-page' with your client page path
+   // }
+ // }, [user, router]);
 
   const navbarStyle = {
     backgroundColor: '#D1C2D9', // Color for the navbar

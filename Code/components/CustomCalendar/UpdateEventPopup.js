@@ -1,19 +1,10 @@
-//To update event
-import React from "react";
-import {
-  Container,
-  Dialog,
-  DialogTitle,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
+import { Container, DialogTitle, TextField, Typography, Select, MenuItem } from "@mui/material";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns";
+import { format, parseISO, addMinutes, isValid } from "date-fns";
 import { fetchEventsStart } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
-
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 const mapState = ({ eventsData }) => ({
@@ -22,294 +13,115 @@ const mapState = ({ eventsData }) => ({
 
 const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const dispatch = useDispatch();
-
-  const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
-  //more of these varibles may need to be converted to let
-  var { event } = useSelector(mapState);
-  const [ID, setID] = useState(event_main._id)//To save goto
-  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main.start);
-  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main.end);
-  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
-  const [formattedStartDate, setFormattedStartDate] = useState(startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy "));
-  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
-  //console.log("event_main.title:", event_main.title); need to reset the value with useEffect when event_main is updated
-  const [title, setTitle] = useState(event_main.title);
-  const [backgroundColor, setBackgroundColor] = useState(event_main.background);
-  const [massageLenght, setMassageLenght] = useState("Calculating");
-
-  const { user, isLoading } = useUser();
-
-  //Reset values if event_main is changed or being reassigned
+  const { user } = useUser();
+  
+  const [ID, setID] = useState(event_main ? event_main._id : '');
+  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main ? parseISO(event_main.start) : new Date());
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? parseISO(event_main.end) : addMinutes(new Date(), 60));
+  const [title, setTitle] = useState(event_main ? event_main.title : '');
+  const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
+  const [selectedDuration, setSelectedDuration] = useState(60); // Duration is either 60 or 120
+  
   useEffect(() => {
     if (event_main) {
-      setID(event_main._id)
-      setStartTimeAndDate(event_main.start);
-      setEndTimeAndDate(event_main.end);
-      setFromTime(event_main.start && format(event_main.start, 'hh:mma'));
-      setFormattedStartDate(
-        event_main.start && format(event_main.start, 'eeee, MMMM dd, yyyy ')
-      );
-      setToTime(event_main.end && format(event_main.end, 'hh:mma'));
+      setID(event_main._id);
+      setStartTimeAndDate(parseISO(event_main.start));
+      setEndTimeAndDate(parseISO(event_main.end));
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
-      //setMassageLenght(event_main.lenght);
     }
   }, [event_main]);
 
-  const handleCancelEvent = () =>{
-    try{
-      if (ID) {
+  const handleUpdateEvent = () => {
+    const userEmail = user ? user.email : "not_signed_in";
+    const duration = selectedDuration; // Make sure to validate this is either 60 or 120
 
-        //Save useremail, replace with another idenifier later
-        var userEmail = "___default"
-        if(!user){
-          alert("Please sign in")
-          userEmail = "not_signed_in"
-          //alert(userEmail)
-        }else{
-          userEmail = user.email
-        }
+    const updatedEvent = {
+      change_id: ID,
+      status: "Update",
+      title,
+      start: startTimeAndDate,
+      end: addMinutes(new Date(startTimeAndDate), duration),
+      description: `Updated by user ${userEmail}, Duration: ${duration} minutes`,
+      background: backgroundColor,
+      user: userEmail
+    };
 
-        //alert("Sending command to cancel")
-        const data = {
-          change_id: ID,
-          status: "Cancel",
-          title: title,
-          start: startTimeAndDate,
-          end: endTimeAndDate,
-          description: "Booking cancelled by user "+userEmail,
-          background: "#ff0000",
-          user: userEmail,
-        };
-        //alert("Sending command to delete")
-        fetch("/api/events", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((res) => res.json())
-          .then((json) => {
-            handleClose();
-            dispatch(fetchEventsStart());
-          });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  const testInfo = () =>{//All data should be working now
-    alert(ID);
-    //alert(event_main.title)
-    //alert(title)
-    //alert(event_main.start)
-    //alert(event_main.end)
-    //alert(event_main.background)
-  }
-
-  const changeEndTime = ({ length }) => {
-    //alert(length+0)
-    //alert(`You change the lenght of the massage to ${length}`);
-    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    var newTimeAndDate = new Date(startTimeAndDate);//Reset time
-    newTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
-    alert(`You change the lenght of the massage to ${newTimeAndDate}`);
-    setEndTimeAndDate(newTimeAndDate)
-    setMassageLenght(length);
-    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedEvent),
+    })
+    .then(response => response.json())
+    .then(() => {
+      handleClose();
+      dispatch(fetchEventsStart());
+    })
+    .catch(error => console.error('Error updating event:', error));
   };
 
-  const handleUpdateEvent = () =>{
-    //this will update the bookings
-    try{
+  const handleCancelEvent = () => {
     if (ID) {
-      //Save useremail, replace with another idenifier later
-      var userEmail = "___default"
-      if(!user){
-        alert("Please sign in")
-        userEmail = "not_signed_in"
-        //alert(userEmail)
-      }else{
-        userEmail = user.email
-      }
-
-      //alert("Sending command to update")
-      const data = {
-        change_id: ID,
-        status: "Update",
-        title: title,
-        start: startTimeAndDate,
-        end: endTimeAndDate,
-        description: "Booking updated by user "+userEmail,
-        background: backgroundColor,
-        user: userEmail,
-      };
-      //alert("Sending command to delete")
+      const userEmail = user ? user.email : "not_signed_in";
       fetch("/api/events", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ change_id: ID, status: "Cancel", user: userEmail }),
       })
-        .then((res) => res.json())
-        .then((json) => {
-          handleClose();
-          dispatch(fetchEventsStart());
-        });
+      .then(response => response.json())
+      .then(() => {
+        handleClose();
+        dispatch(fetchEventsStart());
+      })
+      .catch(error => console.error('Error cancelling event:', error));
     }
-  } catch (error) {
-    console.log(error);
-  }
-  }
+  };
+
+  const isValidStart = isValid(startTimeAndDate);
+  const formattedStartDate = isValidStart ? format(startTimeAndDate, 'eeee, MMMM dd, yyyy') : '';
+  const from_time = isValidStart ? format(startTimeAndDate, 'hh:mma') : '';
+  const to_time = isValidStart ? format(endTimeAndDate, 'hh:mma') : '';
 
   return (
     <BaseDialog open={open} handleClose={handleClose}>
-      <Container
-        sx={{
-          background: "white",
-          top: "30%",
-          left: "10%",
-          minWidth: "450px",
-          paddingBottom: "64px",
-        }}
-      >
-        {formattedStartDate && (
-          <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-            {formattedStartDate}, {from_time} - {to_time}
-          </Typography>
-        )}
+      <Container sx={{ padding: "24px" }}>
+        <DialogTitle>Update Booking</DialogTitle>
+        <Typography>{`${formattedStartDate}, from ${from_time} to ${to_time}`}</Typography>
         <TextField
           fullWidth
           required
-          sx={{ marginTop: "16px" }}
-          placeholder="Your name"
-          //label="Your name"//No longer necessary
+          label="Client Name or Reserved"
           value={title}
-        onChange={(e) => setTitle(e.target.value)/*alert("testing")*/}
+          onChange={(e) => setTitle(e.target.value)}
+          sx={{ my: 2 }}
         />
-        {/*Flag below for replacement*/}
-        <div>
-          <div style={{ paddingTop: "16px" }}>
-            <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
-            <div style={{ display: "flex",marginTop:'12px',marginBottom:'4px' }}>
-              {colorsList.map((item) => {
-                return (
-                  <div
-                    key={item}
-                    style={{
-                      background: item,
-                      width: "20px",
-                      height: "20px",
-                      marginRight: "8px",
-                    }}
-                    onClick={() => setBackgroundColor(item)}
-                  ></div>
-                );
-              })}
-            </div>
-
-            <input
-              type={"color"}
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-              style={{
-                width: "100%",
-                marginTop: "4px",
-                border: "none",
-                background: "none",
-              }}
-            />
-            <Typography>
-              Selected color: <b>{backgroundColor}</b>
-            </Typography>
-          </div>
-        </div>
-        {/*Flag above for replacement*/}
-
-        <div>
-            <div>Change duration
-              <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
-                {potentialLenght.map((item) => (
-                <button
-                  key={item}
-                  style={{
-                  marginRight: '8px',
-                  padding: '8px', // Add padding for better styling
-                  cursor: 'pointer', // Add cursor pointer for better UX
-                }}
-                onClick={() => changeEndTime({length:item})}//Why it has to call length like this, I have no clue, but it has to be like this.
-                >
-                {item}
-                </button>
-                ))}
-              </div>
-            <div>
-              Selected lenght: <b>{massageLenght} minutes</b>
-            </div>
-            </div>
-        </div>
-        
-
-        <div
-          style={{
-            display: "flex",
-            padding: "8px",
-            justifyContent: "center",
-            paddingTop: "32px",
-          }}
+        <Typography>Event Color:</Typography>
+        <input
+          type="color"
+          value={backgroundColor}
+          onChange={(e) => setBackgroundColor(e.target.value)}
+          style={{ width: "100%", height: "40px", marginTop: "8px" }}
+        />
+        <Typography sx={{ mt: 2 }}>Adjust Duration:</Typography>
+        <Select
+          value={selectedDuration}
+          onChange={(e) => setSelectedDuration(parseInt(e.target.value))}
+          fullWidth
+          sx={{ mb: 2 }}
         >
-          <PrimaryButton
-            onClick={handleUpdateEvent}
-            sx={{
-              // paddingRight: "32px",
-              // paddingLeft: "32px",
-              width:"200px"
-            }}
-            disabled={!title}
-          >
-            Update booking
-          </PrimaryButton>
+          {[60, 120].map(duration => (
+            <MenuItem key={duration} value={duration}>
+              {duration} minutes
+            </MenuItem>
+          ))}
+        </Select>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+          <PrimaryButton onClick={handleUpdateEvent} disabled={!title}>Update Booking</PrimaryButton>
+          <PrimaryButton onClick={handleCancelEvent} sx={{ ml: 2 }}>Cancel Booking</PrimaryButton>
         </div>
-      <div>
-        <Typography fontSize={`20px`} fontWeight={`700`} paddingBottom="16px">
-          Do you really want to cancel this event?
-        </Typography>
-
-        <div
-          style={{
-            justifyContent: "center",
-            display: "flex",
-          }}
-        >
-          <PrimaryButton title={`Confirm`} onClick={handleCancelEvent}>
-            Cancel booking
-          </PrimaryButton>
-        </div>
-      </div>
       </Container>
     </BaseDialog>
   );
 };
 
-//handleRemoveEvent
 export default UpdateEventPopup;
-
-const colorsList = [
-  "#624b4b",
-  "#bc2020",
-  "#bc20b6",
-  "#420b40",
-  "#1fad96",
-  "#3538ed",
-  "#1c474a",
-  "#32bb30",
-  "#cae958",
-  "#dc3e09",
-];
-const potentialLenght = [
-  30,
-  60,
-  90
-]

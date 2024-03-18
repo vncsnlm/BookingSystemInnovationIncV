@@ -1,126 +1,66 @@
 import React, { useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
-import getDay from "date-fns/getDay";
+import { format, parse, startOfWeek, getDay, addMinutes } from "date-fns";
 import enUS from "date-fns/locale/en-US";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import { useDispatch, useSelector } from "react-redux";
-import CreateEventPopUp from "./CreateEventPopupAdmin";
-import { setEventData } from "redux/events/eventsSlice";
-import { fetchEventsStart } from "redux/events/eventsSlice";
-import UpdateEventPopup from "./AdminUpdateEventPopup";
-const DragAndDropCalendar = withDragAndDrop(Calendar);
+import { useDispatch } from "react-redux";
+import CreateEventPopupAdmin from "./CreateEventPopupAdmin";
+import UpdateEventPopupAdmin from "./AdminUpdateEventPopup";
+import { fetchEventsStart, setEventData } from "redux/events/eventsSlice";
 
-const locales = {
-  "en-US": enUS,
-};
+const locales = { "en-US": enUS };
 
-let currentDate = new Date();
-let currentDay = currentDate.getDay();
-
-//Defines the start of the week
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek: () => startOfWeek(currentDate, { weekStartsOn: currentDay }),
-  getDay,
-  locales,
-});
-
-//This decide if a day is allowed to be selected or not it seems.
-const customDayPropGetter = (date) => {
-  const currentDate = new Date();
-  if (date < currentDate)
-    return {
-      className: "disabled-day",
-      style: {
-        cursor: "not-allowed",
-        background: "rgba(184, 184, 184, 0.1)",
-      },
-    };
-  else return {};
-};
-
-const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
+const CustomCalendar = ({ events = [], height, style }) => {
   const calendarRef = React.createRef();
   const dispatch = useDispatch();
   const [openDialog, setOpenDialog] = useState(false);
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
-  const [data, setData] = useState({});
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const setEventCellStyling = (event) => {
-    if (event.background) {
-      let style = {
-        background: "rgba(7, 97, 125, 0.1)",
-        border: `1px solid ${event.background}`,
-        color: "#07617D",
-        borderLeft: `3px solid ${event.background}`,
+  const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
+  const currentDate = new Date();
+  const lastBookableDate = new Date(currentDate);
+  lastBookableDate.setDate(currentDate.getDate() + 14); // Two weeks from now
 
-        fontWeight: 600,
-        fontSize: "11px",
-      };
-      return { style };
-    }
-    let style = {
-      background: "rgba(7, 97, 125, 0.1)",
-      border: `1px solid #07617D`,
+  const customDayPropGetter = (date) => ({
+    className: date < currentDate || date > lastBookableDate ? "disabled-day" : "",
+    style: {
+      cursor: date < currentDate || date > lastBookableDate ? "not-allowed" : "pointer",
+      background: date < currentDate || date > lastBookableDate ? "rgba(184, 184, 184, 0.1)" : "",
+    },
+  });
+
+  const setEventCellStyling = (event) => ({
+    style: {
+      background: event.background || "rgba(7, 97, 125, 0.1)",
+      border: `1px solid ${event.background || "#07617D"}`,
       color: "#07617D",
-      borderLeft: "3px solid #07617D",
-
+      borderLeft: `3px solid ${event.background || "#07617D"}`,
       fontWeight: 600,
       fontSize: "11px",
-    };
-    return { style };
-  };
-
-  const formats = {
-    weekdayFormat: "EEE",
-    timeGutterFormat: "hh a",
-  };
+    },
+  });
 
   const handleSelect = ({ start, end }) => {
-    const currentDate = new Date();
-    if (start < currentDate) {
-      return null;
-    }
-    if (start > end) return;
-
-    handleOpenPopup();
+    if (start < currentDate || start > lastBookableDate) return;
     dispatch(setEventData({ start, end }));
-  };
-  const handleOpenPopup = () => {
     setOpenDialog(true);
   };
+
   const handleEventSelect = (event) => {
-    handleRemoveDialogOpen();
-    setData(event);
-    console.log(event)
-  };
-  const handleRemoveDialogOpen = () => {
+    setSelectedEvent(event);
     setOpenRemoveDialog(true);
-  };
-  const handleRemoveDialogClose = () => {
-    setOpenRemoveDialog(false);
-    setEventData({});
-    setData({});
-  };
-  const handleDialogClose = () => {
-    setOpenDialog(false);
-    dispatch(setEventData({}));
   };
 
   return (
     <>
       <div className="">Admin sections</div>
-      <button onClick={() => dispatch(fetchEventsStart())}>Refresh</button>{/*This is a simple button to reget the events*/}
+      <button onClick={() => dispatch(fetchEventsStart())}>Refresh</button>
       <DragAndDropCalendar
         ref={calendarRef}
         localizer={localizer}
-        formats={formats}
-        popup={true}
+        popup
         events={events}
         selectable
         resizable
@@ -131,19 +71,12 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
         onSelectEvent={handleEventSelect}
         views={{ week: true }}
         step={30}
-        drilldownView={"week"}
-        scrollToTime={currentDate.getHours()}
+        scrollToTime={new Date()}
         defaultView={"week"}
-        style={{ marginRight: '20px', height: height ? height : "68vh", ...style }}//I added a margin here so that it is easy to scroll up and down
-        {...calendarProps}
+        style={{ marginRight: '20px', height: height || "68vh", ...style }}
       />
-
-      <CreateEventPopUp open={openDialog} handleClose={handleDialogClose} />
-      <UpdateEventPopup
-        open={openRemoveDialog}
-        handleClose={handleRemoveDialogClose}
-        event_main={data}
-      />
+      <CreateEventPopupAdmin open={openDialog} handleClose={() => setOpenDialog(false)} />
+      <UpdateEventPopupAdmin open={openRemoveDialog} handleClose={() => setOpenRemoveDialog(false)} event_main={selectedEvent} />
     </>
   );
 };
