@@ -58,13 +58,13 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     setEndTimeAndDate(resetTimeAndDate)
     //setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
-    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //alert(to_time)//This give the previous time, not the new set time
     setMassageLenght(length)
     //event.end = endTimeAndDate;
     
     setHasSelectLenght(true)//There is a delay to the change
-    alert("You selected a massage lenght")
+    //alert("You selected a massage lenght")
   };
 
   const handleCreateEvent = (e) => {
