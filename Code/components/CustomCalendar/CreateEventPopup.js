@@ -102,24 +102,40 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       for (let i = 0; i < allEvents.length; i++) {
         const singleEvent = allEvents[i];
         console.log(singleEvent.start)
-        if (singleEvent.start <= startTimeAndDateString 
-          && singleEvent.end >= endTimeAndDateString) {
+        if(singleEvent.status == "Cancel"){
+          continue;
+        }
+        if (singleEvent.start == startTimeAndDateString 
+          && singleEvent.end == endTimeAndDateString) {
           console.log("conflict")
           alert("This event conflicts with another event");
           return;
-        } else if (singleEvent.start >= startTimeAndDateString
-          && singleEvent.end <= endTimeAndDateString) {
+        } else if (singleEvent.start == startTimeAndDateString) {
           console.log("conflict")
           alert("This event conflicts with another event");
           return;
-        } else if (singleEvent.start >= startTimeAndDateString
-          && singleEvent.start <= endTimeAndDateString) {
+        } else if (singleEvent.end == endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start < startTimeAndDateString 
+          && singleEvent.end > endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start > startTimeAndDateString
+          && singleEvent.end < endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start > startTimeAndDateString
+          && singleEvent.start < endTimeAndDateString) {
           console.log("conflict")
           alert("This event conflicts with another event");
           return;
         }
-        else if (singleEvent.end >= startTimeAndDateString
-          && singleEvent.end <= endTimeAndDateString) {
+        else if (singleEvent.end > startTimeAndDateString
+          && singleEvent.end < endTimeAndDateString) {
           console.log("conflict")
           alert("This event conflicts with another event");
           return;
@@ -153,7 +169,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){
-        alert("Your not logged in, please log in")//Should probably replace alert with something else
+        //alert("Your not logged in, please log in")//Should probably replace alert with something else
+
         //Turning it off for easier development, turn it on for production later
         //return
       }else{
@@ -164,7 +181,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
       //Booking verification here
       if(schema.end<schema.start){
-        alert("Somehow the end time is after the start, please select a booking lenght to correct")
+        alert("Somehow the end time is after the start, please reselect a booking lenght")
         return
       }
       if(schema.background = null){
@@ -229,45 +246,6 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        {/*}///////////////////////////////////////////Flag this div for deletion, so be replaced with massage prices and selector*/}
-        <div>
-          <div style={{ paddingTop: "16px" }}>
-            <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
-            <div style={{ display: "flex",marginTop:'12px',marginBottom:'4px' }}>
-              {colorsList.map((item) => {
-                return (
-                  <div
-                    key={item}
-                    style={{
-                      background: item,
-                      width: "20px",
-                      height: "20px",
-                      marginRight: "8px",
-                    }}
-                    onClick={() => setBackgroundColor(item)}
-                  ></div>
-                );
-              })}
-            </div>
-
-            <input
-              type={"color"}
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-              style={{
-                width: "100%",
-                marginTop: "4px",
-                border: "none",
-                background: "none",
-              }}
-            />
-            <Typography>
-              Selected color: <b>{backgroundColor}</b>
-            </Typography>
-          </div>
-        </div>
-        {/*}///////////////////////////////////////////Flag previous div for deletion, so be replaced with massage prices and selector*/}
-        
         <div>
         
             <div>Change duration
