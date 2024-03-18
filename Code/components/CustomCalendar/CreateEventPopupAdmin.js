@@ -41,6 +41,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const [selectedDuration, setSelectedDuration] = useState(60); // Default to 60 minutes
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const { user, isLoading } = useUser();
+  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
 
   var startTimeAndDate = event.start;//Here make both of these varibles var, const with useState does not work
   var endTimeAndDate = event.end;
