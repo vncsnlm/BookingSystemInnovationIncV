@@ -114,7 +114,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
 
   return (
     <>
-      <div className="">Admin sections</div>
+      <span className="">Admin sections</span>
       <button id="refreshButton" onClick={() => dispatch(fetchEventsStart())}>Refresh</button>{/*This is a simple button to reget the events*/}
       <DragAndDropCalendar
         ref={calendarRef}
