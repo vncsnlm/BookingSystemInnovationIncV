@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay, addMinutes } from "date-fns";
 import enUS from "date-fns/locale/en-US";
@@ -9,9 +9,11 @@ import CreateEventPopupAdmin from "./CreateEventPopupAdmin";
 import UpdateEventPopupAdmin from "./AdminUpdateEventPopup";
 import { fetchEventsStart, setEventData } from "redux/events/eventsSlice";
 
+const DragAndDropCalendar = withDragAndDrop(Calendar);
+
 const locales = { "en-US": enUS };
 
-const CustomCalendar = ({ events = [], height, style }) => {
+const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
   const calendarRef = React.createRef();
   const dispatch = useDispatch();
   const [openDialog, setOpenDialog] = useState(false);

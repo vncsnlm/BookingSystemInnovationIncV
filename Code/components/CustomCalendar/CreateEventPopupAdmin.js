@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format,isValid, parseISO, addMinutes } from "date-fns";
@@ -39,6 +39,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const [selectedDuration, setSelectedDuration] = useState(60); // Default to 60 minutes
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const { user, isLoading } = useUser();
+
+  var startTimeAndDate = event.start;//Here make both of these varibles var, const with useState does not work
+  var endTimeAndDate = event.end;
+  
+  const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
 
   useEffect(() => {
     setFromTime(startTimeAndDate && format(startTimeAndDate, "hh:mma"));

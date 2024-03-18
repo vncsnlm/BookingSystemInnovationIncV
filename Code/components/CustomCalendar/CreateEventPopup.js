@@ -32,9 +32,16 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const [selectedMassageType, setSelectedMassageType] = useState('swedish');
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const [massageLenght, setMassageLenght] = useState("Unselected");
-  const dispatch = useDispatch();
 
   const { user, isLoading } = useUser();
+
+  var startTimeAndDate = event.start;
+
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
+  
+  var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
+  const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
+  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
 
   //This does not work
   //useEffect(() => {
@@ -54,7 +61,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     setMassageLenght(length)
     //event.end = endTimeAndDate;
     
-    setHasSelectLenght(true)//There is a delay to the change
+    //setHasSelectLenght(true)//There is a delay to the change
     alert("You selected a massage lenght")
   };
 
@@ -73,17 +80,17 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     //Back up if to make sure user selects a lenght
     if(massageLenght == "Unselected"){
       alert("Please select a massage lenght")
-      return
+      //return
     }
 
     //alert("checking if a massage lenght is selected")
     //alert(hasSelectLenght)//!hasSelectLenght
-    if(!hasSelectLenght){//Can only pass if true
+    /*if(!hasSelectLenght){//Can only pass if true
       alert("Please select a lenght for the massage before creating booking")
       //alert(hasSelectLenght)
       return
-    }
-    setHasSelectLenght(false)
+    }*/
+    //setHasSelectLenght(false)
 
     //Verify that the event does not conflict with other events in the database
     //if(true){
@@ -165,7 +172,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const handleCloseAndReset = (e) => {
     //Clear certain data
     //If needed add or remove data here
-    setHasSelectLenght(false)
+    //setHasSelectLenght(false)
     //setTitle("")//Leaving like this so that it can be used later if user makes a mistake
     setMassageLenght("Unselected")
     //setBackgroundColor("#000000")
