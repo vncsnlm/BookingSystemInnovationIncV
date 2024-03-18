@@ -40,8 +40,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       change_id: ID,
       status: "Update",
       title,
-      start: startTimeAndDate,
-      end: addMinutes(new Date(startTimeAndDate), duration),
+      start: event_main.start,
+      end: event_main.end,
       description: `Updated by user ${userEmail}, Duration: ${duration} minutes`,
       background: backgroundColor,
       user: userEmail

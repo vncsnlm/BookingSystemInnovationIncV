@@ -30,7 +30,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? parseISO(event_main.end) : new Date());
   const [title, setTitle] = useState(event_main ? event_main.title : '');
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
-  const [selectedMassageType, setSelectedMassageType] = useState(event_main && event_main.massageType ? event_main.massageType : massageTypes[0].id);
+  const [selectedMassageType, setSelectedMassageType] = useState(event_main.massageType);//event_main && event_main.massageType ? event_main.massageType : massageTypes[0].id
 
   useEffect(() => {
     if (event_main) {
@@ -51,8 +51,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       change_id: ID,
       status: "Update",
       title,
-      start: startTimeAndDate,
-      end: updatedEndTime,
+      start: event_main.start,
+      end: event_main.end,
       description: `Booking updated by user ${userEmail}, Duration: ${selectedMassageType ? massageTypes.find(type => type.id === selectedMassageType).duration : 60} mins, Massage Type: ${selectedMassageType}`,
       background: backgroundColor,
       user: userEmail,
