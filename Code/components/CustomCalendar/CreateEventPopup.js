@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { format, addMinutes, parseISO, isValid } from "date-fns";
 import { fetchEventsStart, setEventData } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
+
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 const mapState = ({ eventsData }) => ({
@@ -30,14 +31,32 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const [title, setTitle] = useState("");
   const [selectedMassageType, setSelectedMassageType] = useState('swedish');
   const [backgroundColor, setBackgroundColor] = useState("#000000");
-  const { user } = useUser();
+  const [massageLenght, setMassageLenght] = useState("Unselected");
+  const dispatch = useDispatch();
 
-  // Process start and end time
-  const startTime = event.start ? parseISO(event.start) : new Date();
-  const endTime = event.end ? parseISO(event.end) : addMinutes(new Date(), 60); // Default to 60 minutes later
-  const formattedStartDate = isValid(startTime) ? format(startTime, "eeee, MMMM dd, yyyy") : '';
-  const from_time = isValid(startTime) ? format(startTime, "hh:mma") : '';
-  const to_time = isValid(endTime) ? format(endTime, "hh:mma") : '';
+  const { user, isLoading } = useUser();
+
+  //This does not work
+  //useEffect(() => {
+    //changeEndTime({ length: 30 });//Intially the lenght will always be set at 30
+  //}, [event]);
+
+  const changeEndTime = ({ length }) => {
+    //alert(`You change the lenght of the massage to ${length}`);
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    const resetTimeAndDate = new Date(startTimeAndDate);//Reset time
+    resetTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    setEndTimeAndDate(resetTimeAndDate)
+    //setMassageLenght(length);
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    //alert(to_time)//This give the previous time, not the new set time
+    setMassageLenght(length)
+    //event.end = endTimeAndDate;
+    
+    setHasSelectLenght(true)//There is a delay to the change
+    alert("You selected a massage lenght")
+  };
 
   const handleCreateEvent = (e) => {
     e.preventDefault();
@@ -51,36 +70,109 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       return;
     }
 
-    const userEmail = user?.email || "not_signed_in";
-    const newEventData = {
-      title,
-      start: startTime,
-      end: addMinutes(startTime, duration),
-      user: userEmail,
-      background: backgroundColor,
-      massageType: selectedType.name,
-      description: `Massage type: ${selectedType.name}, Duration: ${duration} minutes`
-    };
+    //Back up if to make sure user selects a lenght
+    if(massageLenght == "Unselected"){
+      alert("Please select a massage lenght")
+      return
+    }
 
-    // Dispatch an action to create event
-    dispatch(setEventData(newEventData));
-    fetch("/api/events", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newEventData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Success:', data);
-      dispatch(fetchEventsStart()); // Reload events from server
-      handleClose();
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+    //alert("checking if a massage lenght is selected")
+    //alert(hasSelectLenght)//!hasSelectLenght
+    if(!hasSelectLenght){//Can only pass if true
+      alert("Please select a lenght for the massage before creating booking")
+      //alert(hasSelectLenght)
+      return
+    }
+    setHasSelectLenght(false)
+
+    //Verify that the event does not conflict with other events in the database
+    //if(true){
+      //const allEvents = fetchEventsStart({ url: "/api/events" })
+
+      /*
+      allEvents.forEach((singleEvent) => {
+        //determine here
+        if(singleEvent.startTimeAndDate < startTimeAndDate &&
+          singleEvent.endTimeAndDate > endTimeAndDate){
+          alert("This event conflicts with another event")
+          return;
+        }
+      });*/
+    //}
+
+    ///////////////////////////////////testing infromation saving
+    var userEmail = "___default"
+    if(!user){
+      alert("Please sign in")
+      userEmail = "not_signed_in"
+      //alert(userEmail)
+    }else{
+      userEmail = user.email
+    }
+    
+    //////////////////////////////////testing
+    //remember to fix the useremail below
+    try {
+      const schema = {
+        title: title,
+        status: "New",
+        description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
+        user: String(userEmail),//User is being save, make sure to log in
+        background: backgroundColor,
+        start: startTimeAndDate,
+        end: endTimeAndDate,
+      };
+      //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
+      if(!user){
+        alert("Your not logged in, please log in")//Should probably replace alert with something else
+        //Turning it off for easier development, turn it on for production later
+        //return
+      }else{
+        //testing
+        //alert(user.email)
+        //alert(schema.user)
+      }
+
+      //Booking verification here
+      if(schema.end<schema.start){
+        alert("Somehow the end time is after the start, please select a booking lenght to correct")
+        return
+      }
+      if(schema.background = null){
+        alert("status/backgound colour not selected")
+      }
+    
+      const url = "/api/events";
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(schema),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          dispatch(fetchEventsStart({ url: "/api/events" }));
+          setTitle("");
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    handleCloseAndReset();
   };
+
+  //Needs to run when the user closes by clicking outside
+  const handleCloseAndReset = (e) => {
+    //Clear certain data
+    //If needed add or remove data here
+    setHasSelectLenght(false)
+    //setTitle("")//Leaving like this so that it can be used later if user makes a mistake
+    setMassageLenght("Unselected")
+    //setBackgroundColor("#000000")
+
+    //Handle closing of the dialog box
+    handleClose()
+  }
 
   return (
     <BaseDialog open={open} handleClose={handleClose}>

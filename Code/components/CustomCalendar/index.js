@@ -152,7 +152,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
         drilldownView={"week"}
         scrollToTime={currentDate.getHours()}
         defaultView={"week"}
-        style={{ height: height ? height : "68vh", ...style }}
+        style={{ marginRight: '15px', marginLeft: '15px', height: height ? height : "68vh", ...style }}
         {...calendarProps}
       />
 

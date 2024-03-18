@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { Container, DialogTitle, TextField, Typography, MenuItem, Select } from "@mui/material";
+import React from "react";
+import {
+  Container,
+  Dialog,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
 import { format,isValid, parseISO, addMinutes } from "date-fns";
@@ -33,13 +40,50 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const { user, isLoading } = useUser();
 
-  const startTimeAndDate = event && event.start ? parseISO(event.start) : new Date();
-  const endTimeAndDate = addMinutes(startTimeAndDate, selectedDuration);
-  const isValidStart = isValid(startTimeAndDate);
-  const formattedStartDate = isValidStart ? format(startTimeAndDate, "eeee, MMMM dd, yyyy ") : '';
-  const from_time = isValidStart ? format(startTimeAndDate, "hh:mma") : '';
-  const to_time = isValidStart ? format(endTimeAndDate, "hh:mma") : '';
-  const handleCreateEvent = e => {
+  useEffect(() => {
+    setFromTime(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+  })
+
+  const changeEndTime = ({ length }) => {
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    const newTimeAndDate = new Date(endTimeAndDate);//Reset time
+
+    //if change lenght here
+    if(length == "+30"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
+    }else if(length == "-30"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
+    }else if(length == "+60"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
+    }else if(length == "-60"){
+      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    }else if(length == "all day"){
+      startTimeAndDate.setHours(0)
+      startTimeAndDate.setMinutes(0)
+      endTimeAndDate.setHours(23)
+      endTimeAndDate.setMinutes(59)
+      //Do both of what the below functions do
+    }else if(length == "end day"){
+      //make endTimeAndDate the end of the day
+      endTimeAndDate.setHours(23)
+      endTimeAndDate.setMinutes(59)
+    }else if(length == "start day"){
+      startTimeAndDate.setHours(0)
+      startTimeAndDate.setMinutes(0)
+      //make startTimeAndDate the start of the day
+    }
+
+    //alert(endTimeAndDate);
+    
+    //alert(`You change the lenght of the massage to ${newTimeAndDate}`);
+    endTimeAndDate = newTimeAndDate;
+    setMassageLenght(length);
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    //event.end = endTimeAndDate;
+  };
+
+  const handleCreateEvent = (e) => {
     e.preventDefault();
 
     var userEmail = user?.email || "not_signed_in";
@@ -81,7 +125,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       }}>
         {formattedStartDate && (
           <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-            {formattedStartDate}, {from_time} - {to_time}
+            {formattedStartDate}, Time: {from_time} to {to_time}
           </Typography>
         )}
         <TextField
@@ -141,3 +185,25 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 };
 
 export default CreateEventPopUp;
+
+const colorsList = [
+  "#624b4b",
+  "#bc2020",
+  "#bc20b6",
+  " #420b40",
+  "#1fad96",
+  "#3538ed",
+  " #1c474a",
+  "#32bb30",
+  "#cae958",
+  "#dc3e09",
+];
+const potentialLenght = [
+  "all day",
+  "start day",
+  "end day",
+  "+30",
+  "-30",
+  "+60",
+  "-60",
+]

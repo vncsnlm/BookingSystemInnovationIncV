@@ -73,7 +73,8 @@ const CustomCalendar = ({ events = [], height, style }) => {
         step={30}
         scrollToTime={new Date()}
         defaultView={"week"}
-        style={{ marginRight: '20px', height: height || "68vh", ...style }}
+        style={{ marginRight: '20px', height: height ? height : "68vh", ...style }}//I added a margin here so that it is easy to scroll up and down
+        {...calendarProps}
       />
       <CreateEventPopupAdmin open={openDialog} handleClose={() => setOpenDialog(false)} />
       <UpdateEventPopupAdmin open={openRemoveDialog} handleClose={() => setOpenRemoveDialog(false)} event_main={selectedEvent} />
