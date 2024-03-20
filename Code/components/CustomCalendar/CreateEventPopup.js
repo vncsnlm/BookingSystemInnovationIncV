@@ -29,9 +29,10 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const { user, isLoading } = useUser();
 
-  const [startTimeAndDate, setStartAndDate] = useState(event.start);
+  //This is not working again
+  var startTimeAndDate = event.start;
   //var startTimeAndDate = event.start;
-  const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
+  var endTimeAndDate = event.end;
   
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
@@ -100,6 +101,10 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       //console.log(startTimeAndDate.toISOString())
       //console.log(endTimeAndDate.toISOString())
       //console.log("done checking intial time")
+      if(startTimeAndDate == null || endTimeAndDate == null){
+        alert("Please select a start and end time")
+        return
+      }
       const startTimeAndDateString = startTimeAndDate.toISOString();
       const endTimeAndDateString = endTimeAndDate.toISOString();
 
