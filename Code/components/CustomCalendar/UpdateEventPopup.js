@@ -44,7 +44,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       end: event_main.end,
       description: `Updated by user ${userEmail}, Duration: ${duration} minutes`,
       background: backgroundColor,
-      user: userEmail
+      user: userEmail,
     };
 
     fetch("/api/events", {

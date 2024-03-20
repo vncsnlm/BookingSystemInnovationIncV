@@ -19,12 +19,6 @@ const mapState = ({ eventsData }) => ({
   event: eventsData.event,
 });
 
-const massageTypes = [
-  { id: 'swedish', name: 'Swedish', duration: 60 },
-  { id: 'deepTissue', name: 'Deep Tissue', duration: 60 },
-  { id: 'sports', name: 'Sports', duration: 120 },
-];
-
 const CreateEventPopUp = ({ handleClose, open }) => {
   const { event } = useSelector(mapState);
   const dispatch = useDispatch();
@@ -35,7 +29,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const { user, isLoading } = useUser();
 
-  var startTimeAndDate = event.start;
+  const [startTimeAndDate, setStartTimeAndDate] = useState(event.start);
 
   const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
   
@@ -43,26 +37,11 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
 
-  //This does not work
-  //useEffect(() => {
-    //changeEndTime({ length: 30 });//Intially the lenght will always be set at 30
-  //}, [event]);
-
-  const changeEndTime = ({ length }) => {
-    //alert(`You change the lenght of the massage to ${length}`);
-    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    const resetTimeAndDate = new Date(startTimeAndDate);//Reset time
-    resetTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
-    setEndTimeAndDate(resetTimeAndDate)
-    //setMassageLenght(length);
-    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
-    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    //alert(to_time)//This give the previous time, not the new set time
-    setMassageLenght(length)
-    //event.end = endTimeAndDate;
-    
-    //setHasSelectLenght(true)//There is a delay to the change
-    alert("You selected a massage lenght")
+  const reloadEvents = () => {
+    const fetchData = async () => {
+      // Dispatch the action to fetch events when the component mounts
+      await dispatch(fetchEventsStart());
+    };
   };
 
   const handleCreateEvent = (e) => {
@@ -93,19 +72,60 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     //setHasSelectLenght(false)
 
     //Verify that the event does not conflict with other events in the database
-    //if(true){
-      //const allEvents = fetchEventsStart({ url: "/api/events" })
+    reloadEvents();
+    alert("Checking for conflicts in database")
+    if (true) {//This if(true is not needed in anyway and is just still her because I have not been bothening it yet)
+      console.log("checking intial time")
+      console.log(startTimeAndDate.toISOString())
+      console.log(endTimeAndDate.toISOString())
+      console.log("done checking intial time")
+      const startTimeAndDateString = startTimeAndDate.toISOString();
+      const endTimeAndDateString = endTimeAndDate.toISOString();
 
-      /*
-      allEvents.forEach((singleEvent) => {
-        //determine here
-        if(singleEvent.startTimeAndDate < startTimeAndDate &&
-          singleEvent.endTimeAndDate > endTimeAndDate){
-          alert("This event conflicts with another event")
+      console.log(startTimeAndDateString)
+      for (let i = 0; i < allEvents.length; i++) {
+        const singleEvent = allEvents[i];
+        console.log(singleEvent.start)
+        if(singleEvent.status == "Cancel"){
+          continue;
+        }
+        if (singleEvent.start == startTimeAndDateString 
+          && singleEvent.end == endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start == startTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.end == endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start < startTimeAndDateString 
+          && singleEvent.end > endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start > startTimeAndDateString
+          && singleEvent.end < endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start > startTimeAndDateString
+          && singleEvent.start < endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
           return;
         }
-      });*/
-    //}
+        else if (singleEvent.end > startTimeAndDateString
+          && singleEvent.end < endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        }
+      }
+    }
 
     ///////////////////////////////////testing infromation saving
     var userEmail = "___default"
@@ -223,5 +243,13 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     </BaseDialog>
   );
 };
+
+const massageTypes = [
+  { id: 'swedish', name: 'Swedish', duration: 60 },
+  { id: 'deepTissue', name: 'Deep Tissue', duration: 60 },
+  { id: 'sports', name: 'Sports', duration: 120 },
+];
+
+const massages = ['Swedish', 'Deep Tissue', 'Sports'];
 
 export default CreateEventPopUp;
