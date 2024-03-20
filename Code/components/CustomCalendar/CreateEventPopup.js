@@ -29,7 +29,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const { user, isLoading } = useUser();
 
-  var startTimeAndDate = event.start;
+  const [startTimeAndDate, setStartAndDate] = useState(event.start);
+  //var startTimeAndDate = event.start;
   const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
   
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
