@@ -21,6 +21,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [title, setTitle] = useState(event_main ? event_main.title : '');
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
   const [selectedDuration, setSelectedDuration] = useState(60); // Duration is either 60 or 120
+  const [selectedMassageType, setSelectedMassageType] = useState(event_main ? event_main.massageType : 'Unselected'); // Default to first type
   
   useEffect(() => {
     if (event_main) {

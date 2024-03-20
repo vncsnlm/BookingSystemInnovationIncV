@@ -23,7 +23,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const { event } = useSelector(mapState);
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const [selectedMassageType, setSelectedMassageType] = useState('swedish');
+  const [selectedMassageType, setSelectedMassageType] = useState('Swedish'); // Default to first type
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const [massageLenght, setMassageLenght] = useState("Unselected");
 
@@ -94,12 +94,12 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
     //Verify that the event does not conflict with other events in the database
     reloadEvents();
-    alert("Checking for conflicts in database")
+    //alert("Checking for conflicts in database")
     if (true) {//This if(true is not needed in anyway and is just still her because I have not been bothening it yet)
-      console.log("checking intial time")
-      console.log(startTimeAndDate.toISOString())
-      console.log(endTimeAndDate.toISOString())
-      console.log("done checking intial time")
+      //console.log("checking intial time")
+      //console.log(startTimeAndDate.toISOString())
+      //console.log(endTimeAndDate.toISOString())
+      //console.log("done checking intial time")
       const startTimeAndDateString = startTimeAndDate.toISOString();
       const endTimeAndDateString = endTimeAndDate.toISOString();
 

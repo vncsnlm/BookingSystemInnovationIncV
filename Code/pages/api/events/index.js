@@ -69,6 +69,7 @@ export default async function handler(req, res) {
         }*/
 
         //await getEvent(req, res);put ID and double check if it is cancelled
+        
         await updateEvent(req, res);
         break;
       }else if(status == "Delete"){
