@@ -30,8 +30,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? parseISO(event_main.end) : new Date());
   const [title, setTitle] = useState(event_main ? event_main.title : '');
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
-  const [selectedMassageType, setSelectedMassageType] = useState(event_main.massageType);//event_main && event_main.massageType ? event_main.massageType : massageTypes[0].id
-
+  const [selectedMassageType, setSelectedMassageType] = useState(event_main ? event_main.massageType : "Unselected");//event_main && event_main.massageType ? event_main.massageType : massageTypes[0].id
+  
   useEffect(() => {
     if (event_main) {
       setID(event_main._id);
@@ -88,6 +88,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
         description: "Booking cancelled by user " + userEmail,
         background: "#ff0000",
         user: userEmail,
+        massageType: selectedMassageType,
       };
 
       fetch("/api/events", {
@@ -153,5 +154,11 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     </BaseDialog>
   );
 };
+
+const massages = [
+  'Swedish', 
+  'Deep Tissue', 
+  'Sports',
+];
 
 export default UpdateEventPopup;

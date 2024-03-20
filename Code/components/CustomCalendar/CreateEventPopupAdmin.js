@@ -37,7 +37,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const { event } = useSelector(mapState);
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const [selectedMassageType, setSelectedMassageType] = useState(massageTypes[0].id); // Default to first type
+  const [selectedMassageType, setSelectedMassageType] = useState('Swedish'); // Default to first type
   const [selectedDuration, setSelectedDuration] = useState(60); // Default to 60 minutes
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const { user, isLoading } = useUser();
@@ -100,7 +100,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       const schema = {
         title,
         status: "New",
-        description: `Booking for ${massageTypes.find(type => type.id === selectedMassageType).name} massage created by user ${userEmail}. Duration: ${selectedDuration} minutes.`,
+        description: `Booking for ${selectedMassageType} massage created by user ${userEmail}. Duration: ${selectedDuration} minutes.`,
         user: userEmail,
         background: backgroundColor,
         start: startTimeAndDate,
@@ -216,3 +216,9 @@ const potentialLenght = [
   "+60",
   "-60",
 ]
+
+const massages = [
+  'Swedish', 
+  'Deep Tissue', 
+  'Sports',
+];
