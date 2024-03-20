@@ -29,19 +29,39 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const { user, isLoading } = useUser();
 
-  const [startTimeAndDate, setStartTimeAndDate] = useState(event.start);
-
+  var startTimeAndDate = event.start;
   const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
   
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
 
+  const allEvents = useSelector(state => state.eventsData.events);
+
   const reloadEvents = () => {
     const fetchData = async () => {
       // Dispatch the action to fetch events when the component mounts
       await dispatch(fetchEventsStart());
     };
+    
+    fetchData();
+  };
+
+  const changeEndTime = ({ length }) => {
+    //alert(`You change the lenght of the massage to ${length}`);
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    const resetTimeAndDate = new Date(startTimeAndDate);//Reset time
+    resetTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
+    setEndTimeAndDate(resetTimeAndDate)
+    //setMassageLenght(length);
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    //alert(to_time)//This give the previous time, not the new set time
+    setMassageLenght(length)
+    //event.end = endTimeAndDate;
+    
+    setHasSelectLenght(true)//There is a delay to the change
+    //alert("You selected a massage lenght")
   };
 
   const handleCreateEvent = (e) => {
@@ -58,7 +78,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
     //Back up if to make sure user selects a lenght
     if(massageLenght == "Unselected"){
-      alert("Please select a massage lenght")
+      //alert("Please select a massage lenght")
       //return
     }
 
