@@ -50,25 +50,9 @@ export default async function handler(req, res) {
       console.log(status)
       //console.log(res)
       if(status == "Update" || status == "Cancel"){
-        console.log("Update")
+        console.log(status)
 
-        //Basic verify the incoming data
-        //Basic authenication at this stage, deactivate as not needed in development
-        /*if(!user){
-          res.status(400).json({ success: false });
-          break
-        }
-        if(user == "" || user == undefined){
-          res.status(400).json({ success: false });
-          break
-        }
-        //Basic authenication at this stage, need to check against valid user ID
-        if(user == "not_signed_in" || user == "___default"){
-          //res.status(400).json({ success: false });
-          //break
-        }*/
-
-        //await getEvent(req, res);put ID and double check if it is cancelled
+        //Add verification here
         
         await updateEvent(req, res);
         break;
