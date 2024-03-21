@@ -44,6 +44,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
   const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
 
+  const [massageLength, setMassageLenght] = useState("Unselected");
+
   var startTimeAndDate = event.start;//Here make both of these varibles var, const with useState does not work
   var endTimeAndDate = event.end;
   
@@ -141,15 +143,17 @@ const CreateEventPopUp = ({ handleClose, open }) => {
             {formattedStartDate}, Time: {from_time} to {to_time}
           </Typography>
         )}
-        <TextField
-          fullWidth
-          required
-          sx={{ marginTop: "16px" }}
-          placeholder="Client name"
-          label="Client name"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <div>
+          <TextField
+            required
+            sx={{ marginTop: "16px" }}
+            placeholder="Client name"
+            label="Client name"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <button onClick={() => setTitle("Reserved")}>Default</button>{/*Make button in same line at title, and is aligned horizontally*/}
+        </div>
         <Typography sx={{ mt: 2 }}>Massage Type:</Typography>
         <Select
           value={selectedMassageType}
@@ -176,6 +180,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
             </MenuItem>
           ))}
         </Select>
+
         <Typography sx={{ mt: 2 }}>Event Color:</Typography>
         <input
           type="color"
@@ -183,6 +188,29 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           onChange={(e) => setBackgroundColor(e.target.value)}
           style={{ width: "100%", height: "40px", border: "none", marginTop: "8px" }}
         />
+
+        <div>Change start time</div>
+            <div>Change duration
+              <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
+                {potentialLenght.map((item) => (
+                <button
+                  key={item}
+                  style={{
+                  marginRight: '8px',
+                  padding: '8px', // Add padding for better styling
+                  cursor: 'pointer', // Add cursor pointer for better UX
+                }}
+                onClick={() => changeEndTime({length:item})}//Why it has to call length like this, I have no clue, but it has to be like this.
+                >
+                {item}
+                </button>
+                ))}
+              </div>
+            <div>
+              Selected color: <b>insert selected lenght</b>
+            </div>
+        </div>
+
         <div style={{
           display: "flex",
           justifyContent: "center",
@@ -228,4 +256,5 @@ const massages = [
   'Swedish', 
   'Deep Tissue', 
   'Sports',
+  'Reserved',
 ];
