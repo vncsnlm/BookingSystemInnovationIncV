@@ -22,6 +22,7 @@ const mapState = ({ eventsData }) => ({
 
 // Define the massage types
 const massageTypes = [
+  { id: 0, name: "Reserved", duration: null },
   { id: 1, name: "Swedish", duration: 60 },
   { id: 2, name: "Deep Tissue", duration: 60 },
   { id: 3, name: "Sports", duration: 90 },
@@ -37,12 +38,14 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const { event } = useSelector(mapState);
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const [selectedMassageType, setSelectedMassageType] = useState(massageTypes[0].id); // Default to first type
+  const [selectedMassageType, setSelectedMassageType] = useState('Swedish'); // Default to first type
   const [selectedDuration, setSelectedDuration] = useState(60); // Default to 60 minutes
   const [backgroundColor, setBackgroundColor] = useState("#000000");
   const { user, isLoading } = useUser();
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
   const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+
+  const [massageLength, setMassageLenght] = useState("Unselected");
 
   var startTimeAndDate = event.start;//Here make both of these varibles var, const with useState does not work
   var endTimeAndDate = event.end;
@@ -56,17 +59,21 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    const newTimeAndDate = new Date(endTimeAndDate);//Reset time
+    //const newTimeAndDate = new Date(endTimeAndDate);//Reset time
 
     //if change lenght here
-    if(length == "+30"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
-    }else if(length == "-30"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
-    }else if(length == "+60"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
-    }else if(length == "-60"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    if(length == "e+30"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
+    }else if(length == "e-30"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
+    }else if(length == "e+60"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
+    }else if(length == "e-60"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    }else if(length == "s+30"){
+      startTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + 30);
+    }else if(length == "s-30"){
+      startTimeAndDate.setMinutes(startTimeAndDate.getMinutes() - 30);
     }else if(length == "all day"){
       startTimeAndDate.setHours(0)
       startTimeAndDate.setMinutes(0)
@@ -80,15 +87,15 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }else if(length == "start day"){
       startTimeAndDate.setHours(0)
       startTimeAndDate.setMinutes(0)
-      //make startTimeAndDate the start of the day
     }
 
     //alert(endTimeAndDate);
     
     //alert(`You change the lenght of the massage to ${newTimeAndDate}`);
-    endTimeAndDate = newTimeAndDate;
+    //endTimeAndDate = newTimeAndDate;
     setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    setFromTime(startTimeAndDate && format(startTimeAndDate, "hh:mma"))
     //event.end = endTimeAndDate;
   };
 
@@ -100,7 +107,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       const schema = {
         title,
         status: "New",
-        description: `Booking for ${massageTypes.find(type => type.id === selectedMassageType).name} massage created by user ${userEmail}. Duration: ${selectedDuration} minutes.`,
+        description: `Booking for ${selectedMassageType} massage created by user ${userEmail}. Duration: ${selectedDuration} minutes.`,
         user: userEmail,
         background: backgroundColor,
         start: startTimeAndDate,
@@ -137,15 +144,17 @@ const CreateEventPopUp = ({ handleClose, open }) => {
             {formattedStartDate}, Time: {from_time} to {to_time}
           </Typography>
         )}
-        <TextField
-          fullWidth
-          required
-          sx={{ marginTop: "16px" }}
-          placeholder="Client name"
-          label="Client name"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <div>
+          <TextField
+            required
+            sx={{ marginTop: "16px" }}
+            placeholder="Client name"
+            label="Client name"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <button onClick={() => setTitle("Reserved")}>Default</button>{/*Make button in same line at title, and is aligned horizontally*/}
+        </div>
         <Typography sx={{ mt: 2 }}>Massage Type:</Typography>
         <Select
           value={selectedMassageType}
@@ -172,6 +181,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
             </MenuItem>
           ))}
         </Select>
+
         <Typography sx={{ mt: 2 }}>Event Color:</Typography>
         <input
           type="color"
@@ -179,6 +189,29 @@ const CreateEventPopUp = ({ handleClose, open }) => {
           onChange={(e) => setBackgroundColor(e.target.value)}
           style={{ width: "100%", height: "40px", border: "none", marginTop: "8px" }}
         />
+
+        <div>Change start time</div>
+            <div>Change duration
+              <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
+                {potentialLenght.map((item) => (
+                <button
+                  key={item}
+                  style={{
+                  marginRight: '8px',
+                  padding: '8px', // Add padding for better styling
+                  cursor: 'pointer', // Add cursor pointer for better UX
+                }}
+                onClick={() => changeEndTime({length:item})}//Why it has to call length like this, I have no clue, but it has to be like this.
+                >
+                {item}
+                </button>
+                ))}
+              </div>
+            <div>
+              Selected color: <b>insert selected lenght</b>
+            </div>
+        </div>
+
         <div style={{
           display: "flex",
           justifyContent: "center",
@@ -207,12 +240,22 @@ const colorsList = [
   "#cae958",
   "#dc3e09",
 ];
+
 const potentialLenght = [
   "all day",
   "start day",
   "end day",
-  "+30",
-  "-30",
-  "+60",
-  "-60",
+  "e+30",
+  "e-30",
+  "e+60",
+  "e-60",
+  "s+30",
+  "s-30",
 ]
+
+const massages = [
+  'Swedish', 
+  'Deep Tissue', 
+  'Sports',
+  'Reserved',
+];

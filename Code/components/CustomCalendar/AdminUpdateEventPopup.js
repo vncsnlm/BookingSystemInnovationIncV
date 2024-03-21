@@ -15,6 +15,7 @@ import BaseDialog from "components/Common/Dialog";
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 const massageTypes = [
+  { id: 'unselected', name: 'Unselected', duration: null },
   { id: 'swedish', name: 'Swedish', duration: 60 },
   { id: 'deepTissue', name: 'Deep Tissue', duration: 60 },
   { id: 'sports', name: 'Sports', duration: 90 },
@@ -26,17 +27,17 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const { user } = useUser();
 
   const [ID, setID] = useState(event_main ? event_main._id : '');
-  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main ? parseISO(event_main.start) : new Date());
-  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? parseISO(event_main.end) : new Date());
+  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main ? event_main.start : new Date());
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? event_main.end : new Date());
   const [title, setTitle] = useState(event_main ? event_main.title : '');
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
-  const [selectedMassageType, setSelectedMassageType] = useState(event_main.massageType);//event_main && event_main.massageType ? event_main.massageType : massageTypes[0].id
-
+  const [selectedMassageType, setSelectedMassageType] = useState(event_main ? event_main.massageType : "Unselected");//event_main && event_main.massageType ? event_main.massageType : massageTypes[0].id
+  
   useEffect(() => {
     if (event_main) {
       setID(event_main._id);
-      setStartTimeAndDate(parseISO(event_main.start));
-      setEndTimeAndDate(parseISO(event_main.end));
+      setStartTimeAndDate(event_main.start);
+      setEndTimeAndDate(event_main.end);
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
       setSelectedMassageType(event_main.massageType || massageTypes[0].id);
@@ -45,14 +46,17 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
 
   const handleUpdateEvent = () => {
     const userEmail = user ? user.email : "not_signed_in";
-    const updatedEndTime = isValid(startTimeAndDate) ? addMinutes(startTimeAndDate, selectedMassageType ? massageTypes.find(type => type.id === selectedMassageType).duration : 60) : new Date();
+    //const updatedEndTime = isValid(startTimeAndDate) ? addMinutes(startTimeAndDate, selectedMassageType ? massageTypes.find(type => type.id === selectedMassageType).duration : 60) : new Date();
+
+    alert(startTimeAndDate)
+    alert(endTimeAndDate)
 
     const data = {
       change_id: ID,
       status: "Update",
       title,
-      start: event_main.start,
-      end: event_main.end,
+      start: startTimeAndDate,
+      end: endTimeAndDate,
       description: `Booking updated by user ${userEmail}, Duration: ${selectedMassageType ? massageTypes.find(type => type.id === selectedMassageType).duration : 60} mins, Massage Type: ${selectedMassageType}`,
       background: backgroundColor,
       user: userEmail,
@@ -88,6 +92,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
         description: "Booking cancelled by user " + userEmail,
         background: "#ff0000",
         user: userEmail,
+        massageType: selectedMassageType,
       };
 
       fetch("/api/events", {
@@ -153,5 +158,24 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     </BaseDialog>
   );
 };
+
+const potentialLenght = [
+  "all day",
+  "start day",
+  "end day",
+  "e+30",
+  "e-30",
+  "e+60",
+  "e-60",
+  "s+30",
+  "s-30",
+]
+
+const massages = [
+  'Reserved',
+  'Swedish', 
+  'Deep Tissue', 
+  'Sports',
+];
 
 export default UpdateEventPopup;
