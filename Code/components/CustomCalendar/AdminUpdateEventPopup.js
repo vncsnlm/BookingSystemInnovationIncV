@@ -155,6 +155,18 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   );
 };
 
+const potentialLenght = [
+  "all day",
+  "start day",
+  "end day",
+  "e+30",
+  "e-30",
+  "e+60",
+  "e-60",
+  "s+30",
+  "s-30",
+]
+
 const massages = [
   'Swedish', 
   'Deep Tissue', 
