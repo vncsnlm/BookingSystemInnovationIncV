@@ -22,6 +22,11 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
   const [selectedDuration, setSelectedDuration] = useState(60); // Duration is either 60 or 120
   const [selectedMassageType, setSelectedMassageType] = useState(event_main ? event_main.massageType : 'Unselected'); // Default to first type
+
+  //const isValidStart = isValid(startTimeAndDate);
+  const [formattedStartDate, setFormattedStartDate] = useState(event_main.start && format(event_main.start, "eeee, MMMM dd, yyyy "));
+  const [from_time, setFromTime] = useState("Unselected");
+  const [to_time, setToTime] = useState("Unselected");
   
   useEffect(() => {
     if (event_main) {
@@ -30,6 +35,10 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       setEndTimeAndDate(parseISO(event_main.end));
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
+      setSelectedMassageType(event_main.massageType);
+
+      setFromTime(event_main.start && format(event_main.start, "hh:mma"))
+      setToTime(event_main.end && format(event_main.end, "hh:mma"))
     }
   }, [event_main]);
 
@@ -77,11 +86,6 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       .catch(error => console.error('Error cancelling event:', error));
     }
   };
-
-  const isValidStart = isValid(startTimeAndDate);
-  const formattedStartDate = isValidStart ? format(startTimeAndDate, 'eeee, MMMM dd, yyyy') : '';
-  const from_time = isValidStart ? format(startTimeAndDate, 'hh:mma') : '';
-  const to_time = isValidStart ? format(endTimeAndDate, 'hh:mma') : '';
 
   return (
     <BaseDialog open={open} handleClose={handleClose}>
