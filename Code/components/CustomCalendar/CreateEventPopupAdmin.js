@@ -22,6 +22,7 @@ const mapState = ({ eventsData }) => ({
 
 // Define the massage types
 const massageTypes = [
+  { id: 0, name: "Reserved", duration: null },
   { id: 1, name: "Swedish", duration: 60 },
   { id: 2, name: "Deep Tissue", duration: 60 },
   { id: 3, name: "Sports", duration: 90 },

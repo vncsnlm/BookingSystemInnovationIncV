@@ -16,8 +16,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const { user } = useUser();
   
   const [ID, setID] = useState(event_main ? event_main._id : '');
-  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main ? parseISO(event_main.start) : new Date());
-  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? parseISO(event_main.end) : addMinutes(new Date(), 60));
+  const [startTimeAndDate, setStartTimeAndDate] = useState(event_main ? event_main.start : new Date());
+  const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? event_main.end : addMinutes(new Date(), 60));
   const [title, setTitle] = useState(event_main ? event_main.title : '');
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
   const [selectedDuration, setSelectedDuration] = useState(60); // Duration is either 60 or 120
@@ -31,8 +31,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   useEffect(() => {
     if (event_main) {
       setID(event_main._id);
-      setStartTimeAndDate(parseISO(event_main.start));
-      setEndTimeAndDate(parseISO(event_main.end));
+      setStartTimeAndDate(event_main.start);
+      setEndTimeAndDate(event_main.end);
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
       setSelectedMassageType(event_main.massageType);
@@ -46,15 +46,17 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     const userEmail = user ? user.email : "not_signed_in";
     const duration = selectedDuration; // Make sure to validate this is either 60 or 120
 
+    alert(selectedMassageType);
     const updatedEvent = {
       change_id: ID,
       status: "Update",
       title,
-      start: event_main.start,
+      start: event_main.start,//Selecting time here does not work
       end: event_main.end,
       description: `Updated by user ${userEmail}, Duration: ${duration} minutes`,
       background: backgroundColor,
       user: userEmail,
+      massageType: selectedMassageType,
     };
 
     fetch("/api/events", {
@@ -73,17 +75,33 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const handleCancelEvent = () => {
     if (ID) {
       const userEmail = user ? user.email : "not_signed_in";
+      const data = {
+        change_id: ID,
+        status: "Cancel",
+        title,
+        start: startTimeAndDate,
+        end: endTimeAndDate,
+        description: "Booking cancelled by user " + userEmail,
+        background: "#ff0000",
+        user: userEmail,
+        massageType: selectedMassageType,
+      };
+
       fetch("/api/events", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ change_id: ID, status: "Cancel", user: userEmail }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       })
-      .then(response => response.json())
+      .then(res => res.json())
       .then(() => {
         handleClose();
         dispatch(fetchEventsStart());
       })
-      .catch(error => console.error('Error cancelling event:', error));
+      .catch(error => {
+        console.error("Error cancelling event:", error);
+      });
     }
   };
 
@@ -100,6 +118,21 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           onChange={(e) => setTitle(e.target.value)}
           sx={{ my: 2 }}
         />
+
+        <Typography sx={{ mt: 2 }}>Massage Type:</Typography>
+        <Select
+          value={selectedMassageType}
+          onChange={(e) => setSelectedMassageType(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          {massageTypes.map((type) => (
+            <MenuItem key={type.id} value={type.id}>
+              {type.name}
+            </MenuItem>
+          ))}
+        </Select>
+
         <Typography>Event Color:</Typography>
         <input
           type="color"
@@ -128,5 +161,12 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     </BaseDialog>
   );
 };
+
+const massageTypes = [
+  { id: 'swedish', name: "Swedish", duration: 60 },
+  { id: 'deepTissue', name: "Deep Tissue", duration: 60 },
+  { id: 'sports', name: "Sports", duration: 90 },
+  // Add more as needed
+];
 
 export default UpdateEventPopup;
