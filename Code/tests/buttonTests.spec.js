@@ -13,3 +13,11 @@ test('Navbar link to booking page correct text', async ({ page }) => {
     const locator = page.locator('Custom Calendar');
     await expect(locator).toHaveText(/Today/);
   });
+
+  test('Booking pull up exists', async ({ page }) => {
+    await page.goto('http://localhost:3000/booking');
+    await page.locator('div:nth-child(8) > div:nth-child(25) > .rbc-events-container').click();
+    await expect(page.getByLabel('Client Name *')).toBeVisible();
+    await expect(page.getByRole('combobox')).toBeVisible();
+    await page.getByRole('button').first().click();
+  });

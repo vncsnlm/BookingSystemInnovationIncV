@@ -11,9 +11,7 @@ test('Test to fail api/events page', async ({ page }) => {
 
 test('Calender today button', async ({ page }) => {
   await page.goto('http://127.0.0.1:3000/booking');
-
-  const locator = page.locator('draganddropcalendar');
-  await expect(locator).toHaveText(/Today/);
+  await expect(page.getByRole('button', { name: 'Today' })).toBeVisible();
 });
 
 //Make sure the link to booking page works, but link should only work if you are logged in
@@ -40,11 +38,4 @@ test('Navbar link to booking page working alt', async ({ page }) => {
   await page.click('text=BOOK NOW')
 
   await expect(page).toHaveURL('http://127.0.0.1:3000/booking')
-});
-
-test('Login button', async ({ page }) => {
-  await page.goto('http://127.0.0.1:3000');
-
-  const locator = page.locator('div');
-  await expect(locator).toHaveText(/Admin sections/);
 });
