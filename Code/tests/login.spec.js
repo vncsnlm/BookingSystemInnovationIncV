@@ -58,6 +58,18 @@ test('Log in fail test 2', async ({ page }) => {
   await expect(page).not.toHaveURL('http://localhost:3000/')
 });
 
+test('Log in fail test 3', async ({ page }) => {
+  await page.goto('http://localhost:3000/');
+  await page.getByRole('link', { name: 'Log in' }).click();
+  await page.getByLabel('Email address').click();
+  await page.getByLabel('Email address').fill('a');
+  await page.getByLabel('Password').click();
+  await page.getByLabel('Password').fill('a');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await expect(page.getByText('Wrong email or password')).toBeVisible();
+  await expect(page.locator('#error-element-password')).toContainText('Wrong email or password');
+});
+
 //Make sure you leave localhost:3000
 test('Go to Auth0 page', async ({ page }) => {
   await page.goto('http://localhost:3000/');
