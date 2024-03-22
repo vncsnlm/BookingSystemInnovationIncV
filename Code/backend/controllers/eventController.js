@@ -127,7 +127,9 @@ const deleteEvent = async (req, res) => {
 // update a Event
 const updateEvent = async (req, res) => {
   console.log("Trying to updating event")
-  const { change_id } = req.body;
+  const { change_id,status } = req.body;
+
+  console.log(status)
 
   if (!mongoose.Types.ObjectId.isValid(change_id)) {
     return res.status(400).json({ error: "No such Event" });
