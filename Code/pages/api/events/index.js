@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
       //Backend verification here
       //Uncomment out the lines in below section to activate verification
-      if(user == "not_signed_in"){
+      if(user == "not_signed_in" || user == ""){
         //res.status(403).json({ success: false });
         //break;
       }

@@ -1,7 +1,7 @@
 //Note how to verify bookings
 //Might make a global component
 
-if(user == "not_signed_in"){
+if(user == "not_signed_in" || user == ""){
     //res.status(403).json({ success: false });
     //break;
   }
