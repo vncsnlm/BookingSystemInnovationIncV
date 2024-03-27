@@ -32,7 +32,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [title, setTitle] = useState(event_main ? event_main.title : '');
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
   const [selectedMassageType, setSelectedMassageType] = useState(event_main ? event_main.massageType : "Unselected");//event_main && event_main.massageType ? event_main.massageType : massageTypes[0].id
-  
+  const [description, setDescription] = useState(event_main ? event_main.description : '');
+
   useEffect(() => {
     if (event_main) {
       setID(event_main._id);
@@ -41,6 +42,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
       setSelectedMassageType(event_main.massageType || massageTypes[0].id);
+      setDescription(event_main.description);
     }
   }, [event_main]);
 
@@ -154,6 +156,8 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
           <PrimaryButton onClick={handleUpdateEvent} disabled={!title}>Update Booking</PrimaryButton>
           <PrimaryButton onClick={handleCancelEvent}>Cancel Booking</PrimaryButton>
         </div>
+        <div>Change log</div>
+        <div>{description}</div>
       </Container>
     </BaseDialog>
   );
