@@ -45,9 +45,31 @@ export default async function handler(req, res) {
     case "POST":
       //console.log("Post")
       //console.log(req.body.status)//Get this wokring and then updates should work
-      const { status, user } = req.body;
+      const { status, user, description, start, end } = req.body;
       //console.log("Here is status")
       console.log(status)
+
+      //Backend verification here
+      //Uncomment out the lines in below section to activate verification
+      if(user == "not_signed_in"){
+        //res.status(403).json({ success: false });
+        //break;
+      }
+      if(description == ""){//Description should be filled by the frontend
+        //res.status(400).json({ success: false });
+        //break;
+      }
+      if(start == null || end == null){
+        res.status(400).json({ success: false });
+        break;
+      }
+      const startTimeAndDateString = start.toISOString();
+      const endTimeAndDateString = end.toISOString();
+      if(startTimeAndDateString >= endTimeAndDateString){//Start time should be before end time
+        res.status(400).json({ success: false });
+        break;
+      }
+
       //console.log(res)
       if(status == "Update" || status == "Cancel"){
         console.log(status)
