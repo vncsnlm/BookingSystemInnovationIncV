@@ -19,3 +19,7 @@ if(user == "not_signed_in" || user == ""){
     alert("Please select a start and end time")
     return
   }
+
+  if(status == "Update" || status == "Cancel" || status == "Delete" || status == "Create"){ 
+    //Status should always be 1 of these 4 options, otherwise should be rejected
+  }

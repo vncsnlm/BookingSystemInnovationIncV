@@ -63,13 +63,15 @@ export default async function handler(req, res) {
         res.status(400).json({ success: false });
         break;
       }
+      //No clue why this date is having problems
       try {
         //Failing because this is as string not a date right now, needs to be fixed
-        const startTimeAndDateString = start.toISOString();
-        const endTimeAndDateString = end.toISOString();
+        const startTimeAndDateString = Date(start).toISOString();
+        const endTimeAndDateString = Date(end).toISOString();
         if(startTimeAndDateString >= endTimeAndDateString){//Start time should be before end time
-          res.status(400).json({ success: false });
-          break;
+          //res.status(400).json({ success: false });
+          //break;
+          console.log("Bad start end time")
         }
       }catch (error) {
         //This did not work
