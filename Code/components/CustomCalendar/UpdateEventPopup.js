@@ -61,11 +61,12 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     const resetTimeAndDate = new Date(startTimeAndDate);//Reset time
     resetTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + length);
     setEndTimeAndDate(resetTimeAndDate)
-    //Uncommit later
+    setEventLenght(length)
+    //This is not updating in a timely manner
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
     alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //alert(to_time)//This give the previous time, not the new set time
-    setEventLenght(length)
+    
     //event.end = endTimeAndDate;
   };
 
