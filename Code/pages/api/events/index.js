@@ -49,6 +49,12 @@ export default async function handler(req, res) {
       //console.log("Here is status")
       console.log(status)
 
+      //Try this instead
+      if(status == "Get"){
+        await getEventsBYUser(req, res);
+        break;
+      }
+
       //Backend verification here
       //Uncomment out the lines in below section to activate verification
       if(user == "not_signed_in" || user == ""){
