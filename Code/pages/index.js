@@ -8,12 +8,12 @@ export default function Home() {
   const { user, error, isLoading } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
+ // useEffect(() => {
     // Redirect to the client page if the user is logged in
-    if (user) {
-      router.push('Code/pages/Clienthome.js'); // Replace '/client-page' with your client page path
-    }
-  }, [user, router]);
+    //if (user) {
+     // router.push('Code/pages/Clienthome.js'); // Replace '/client-page' with your client page path
+   // }
+ // }, [user, router]);
 
   const navbarStyle = {
     backgroundColor: '#D1C2D9', // Color for the navbar
@@ -89,8 +89,9 @@ export default function Home() {
               height="50"
             />
             <p>Hello, {user.name}</p>
-            <a href="/booking" className="btn btn-primary">Go create a booking</a>
-        
+
+            <a href="/booking" className="btn btn-primary" id="go-to-booking-page">Go create a booking</a>
+
           </>
         )}
         <div style={footerTextStyle}>

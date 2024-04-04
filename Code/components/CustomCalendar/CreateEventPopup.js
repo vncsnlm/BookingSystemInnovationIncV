@@ -1,16 +1,16 @@
-import React from "react";
-import { useState, useEffect} from "react";
+import React, { useState } from "react";
 import {
   Container,
-  Dialog,
   DialogTitle,
   TextField,
   Typography,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns";
-import { fetchEventsStart } from "redux/events/eventsSlice";
+import { format, addMinutes, parseISO, isValid } from "date-fns";
+import { fetchEventsStart, setEventData } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
 
 import { useUser } from '@auth0/nextjs-auth0/client';
@@ -20,27 +20,34 @@ const mapState = ({ eventsData }) => ({
 });
 
 const CreateEventPopUp = ({ handleClose, open }) => {
-  const [hasSelectLenght, setHasSelectLenght] = useState(false);//To make sure user has selected a lenght for the massage
-  //more of these varibles may need to be converted to let
-  var { event } = useSelector(mapState);
-  var startTimeAndDate = event.start;
+  const { event } = useSelector(mapState);
+  const dispatch = useDispatch();
+  const [title, setTitle] = useState("");
+  const [selectedMassageType, setSelectedMassageType] = useState('Swedish'); // Default to first type
+  const [backgroundColor, setBackgroundColor] = useState("#000000");
+  const [massageLenght, setMassageLenght] = useState("Unselected");
 
-  const [endTimeAndDate, setEndTimeAndDate] = useState(event.end);
+  const { user, isLoading } = useUser();
+
+  //This is not working again
+  var startTimeAndDate = event.start;
+  //var startTimeAndDate = event.start;
+  var endTimeAndDate = event.end;
   
   var from_time = startTimeAndDate && format(startTimeAndDate, "hh:mma");
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
   const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
-  const [title, setTitle] = useState("");
-  const [backgroundColor, setBackgroundColor] = useState("#000000");
-  const [massageLenght, setMassageLenght] = useState("Unselected");
-  const dispatch = useDispatch();
 
-  const { user, isLoading } = useUser();
+  const allEvents = useSelector(state => state.eventsData.events);
 
-  //This does not work
-  //useEffect(() => {
-    //changeEndTime({ length: 30 });//Intially the lenght will always be set at 30
-  //}, [event]);
+  const reloadEvents = () => {
+    const fetchData = async () => {
+      // Dispatch the action to fetch events when the component mounts
+      await dispatch(fetchEventsStart());
+    };
+    
+    fetchData();
+  };
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${length}`);
@@ -50,50 +57,105 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     setEndTimeAndDate(resetTimeAndDate)
     //setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
-    alert(`You change the lenght of the massage to ${endTimeAndDate}`);
+    //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
     //alert(to_time)//This give the previous time, not the new set time
     setMassageLenght(length)
     //event.end = endTimeAndDate;
     
     setHasSelectLenght(true)//There is a delay to the change
-    alert("You selected a massage lenght")
+    //alert("You selected a massage lenght")
   };
 
   const handleCreateEvent = (e) => {
     e.preventDefault();
-    if(!title){
+
+    // Get massage duration based on selected type
+    /*const selectedType = massageTypes.find(type => type.id === selectedMassageType);
+    const duration = selectedType ? selectedType.duration : 60; // Default duration is 60 minutes
+
+    if (![60, 120].includes(duration)) {
+      alert("Please select a valid duration (60 or 120 minutes).");
       return;
+    }*/
+    if(selectedMassageType == "Unselected"){
+      alert("Please select a massage type")
+      return
     }
 
     //Back up if to make sure user selects a lenght
     if(massageLenght == "Unselected"){
-      alert("Please select a massage lenght")
-      return
+      //alert("Please select a massage lenght")
+      //return
     }
 
     //alert("checking if a massage lenght is selected")
     //alert(hasSelectLenght)//!hasSelectLenght
-    if(!hasSelectLenght){//Can only pass if true
+    /*if(!hasSelectLenght){//Can only pass if true
       alert("Please select a lenght for the massage before creating booking")
       //alert(hasSelectLenght)
       return
-    }
-    setHasSelectLenght(false)
+    }*/
+    //setHasSelectLenght(false)
 
     //Verify that the event does not conflict with other events in the database
-    //if(true){
-      //const allEvents = fetchEventsStart({ url: "/api/events" })
+    reloadEvents();
+    //alert("Checking for conflicts in database")
+    if (true) {//This if(true is not needed in anyway and is just still her because I have not been bothening it yet)
+      //console.log("checking intial time")
+      //console.log(startTimeAndDate.toISOString())
+      //console.log(endTimeAndDate.toISOString())
+      //console.log("done checking intial time")
+      if(startTimeAndDate == null || endTimeAndDate == null){
+        alert("Please select a start and end time")
+        return
+      }
+      const startTimeAndDateString = startTimeAndDate.toISOString();
+      const endTimeAndDateString = endTimeAndDate.toISOString();
 
-      /*
-      allEvents.forEach((singleEvent) => {
-        //determine here
-        if(singleEvent.startTimeAndDate < startTimeAndDate &&
-          singleEvent.endTimeAndDate > endTimeAndDate){
-          alert("This event conflicts with another event")
+      console.log(startTimeAndDateString)
+      for (let i = 0; i < allEvents.length; i++) {
+        const singleEvent = allEvents[i];
+        console.log(singleEvent.start)
+        if(singleEvent.status == "Cancel"){
+          continue;
+        }
+        if (singleEvent.start == startTimeAndDateString 
+          && singleEvent.end == endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start == startTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.end == endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start < startTimeAndDateString 
+          && singleEvent.end > endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start > startTimeAndDateString
+          && singleEvent.end < endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        } else if (singleEvent.start > startTimeAndDateString
+          && singleEvent.start < endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
           return;
         }
-      });*/
-    //}
+        else if (singleEvent.end > startTimeAndDateString
+          && singleEvent.end < endTimeAndDateString) {
+          console.log("conflict")
+          alert("This event conflicts with another event");
+          return;
+        }
+      }
+    }
 
     ///////////////////////////////////testing infromation saving
     var userEmail = "___default"
@@ -107,19 +169,23 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     
     //////////////////////////////////testing
     //remember to fix the useremail below
+    
+    alert(selectedMassageType)
     try {
       const schema = {
         title: title,
         status: "New",
-        description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
+        start: event.start,
+        end: endTimeAndDate,
+        description: `Booking created by user ${String(userEmail)} starting at ${event.start} to ${endTimeAndDate} with the ${selectedMassageType}` , //I start using the description event data storage, change email with user id or something later
         user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
-        start: startTimeAndDate,
-        end: endTimeAndDate,
+        massageTypes: selectedMassageType,
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){
-        alert("Your not logged in, please log in")//Should probably replace alert with something else
+        //alert("Your not logged in, please log in")//Should probably replace alert with something else
+
         //Turning it off for easier development, turn it on for production later
         //return
       }else{
@@ -130,7 +196,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
       //Booking verification here
       if(schema.end<schema.start){
-        alert("Somehow the end time is after the start, please select a booking lenght to correct")
+        alert("Somehow the end time is after the start, please reselect a booking lenght")
         return
       }
       if(schema.background = null){
@@ -160,7 +226,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   const handleCloseAndReset = (e) => {
     //Clear certain data
     //If needed add or remove data here
-    setHasSelectLenght(false)
+    //setHasSelectLenght(false)
     //setTitle("")//Leaving like this so that it can be used later if user makes a mistake
     setMassageLenght("Unselected")
     //setBackgroundColor("#000000")
@@ -170,112 +236,39 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   }
 
   return (
-    <BaseDialog open={open} handleClose={handleCloseAndReset} scroll={`body`} title={`Add Event`}>
-      <Container
-        sx={{
-          background: "white",
-          top: "30%",
-          left: "10%",
-          minWidth: "450px",
-          paddingBottom: "64px",
-        }}
-      >
-        {formattedStartDate && (
-          <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-            {formattedStartDate}, {from_time}{/*} - {to_time}This does not display properly*/}
-          </Typography>
-        )}
+    <BaseDialog open={open} handleClose={handleClose}>
+      <Container sx={{ padding: "24px" }}>
+        <DialogTitle>Create a new booking</DialogTitle>
+        <Typography>{formattedStartDate && `${formattedStartDate}, from ${from_time} to ${to_time}`}</Typography>
         <TextField
           fullWidth
           required
-          sx={{ marginTop: "16px" }}
-          placeholder="Your name"
-          label="Your name"
+          label="Client Name"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          sx={{ my: 2 }}
         />
-
-        {/*}///////////////////////////////////////////Flag this div for deletion, so be replaced with massage prices and selector*/}
-        <div>
-          <div style={{ paddingTop: "16px" }}>
-            <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
-            <div style={{ display: "flex",marginTop:'12px',marginBottom:'4px' }}>
-              {colorsList.map((item) => {
-                return (
-                  <div
-                    key={item}
-                    style={{
-                      background: item,
-                      width: "20px",
-                      height: "20px",
-                      marginRight: "8px",
-                    }}
-                    onClick={() => setBackgroundColor(item)}
-                  ></div>
-                );
-              })}
-            </div>
-
-            <input
-              type={"color"}
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-              style={{
-                width: "100%",
-                marginTop: "4px",
-                border: "none",
-                background: "none",
-              }}
-            />
-            <Typography>
-              Selected color: <b>{backgroundColor}</b>
-            </Typography>
-          </div>
-        </div>
-        {/*}///////////////////////////////////////////Flag previous div for deletion, so be replaced with massage prices and selector*/}
-        
-        <div>
-        
-            <div>Change duration
-              <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
-                {potentialLenght.map((item) => (
-                <button
-                  key={item}
-                  style={{
-                  marginRight: '8px',
-                  padding: '8px', // Add padding for better styling
-                  cursor: 'pointer', // Add cursor pointer for better UX
-                }}
-                onClick={() => changeEndTime({length:item})}//Why it has to call length like this, I have no clue, but it has to be like this.
-                >
-                {item}
-                </button>
-                ))}
-              </div>
-            <div>
-              Selected lenght: <b>{massageLenght} minutes</b>
-            </div>
-            </div>
-        </div>
-        
-
-        <div
-          style={{
-            display: "flex",
-            padding: "8px",
-            justifyContent: "center",
-            paddingTop: "32px",
-          }}
+        <Typography sx={{ mt: 2 }}>Massage Type:</Typography>
+        <Select
+          value={selectedMassageType}
+          onChange={(e) => setSelectedMassageType(e.target.value)}
+          fullWidth
         >
-          <PrimaryButton
-            onClick={handleCreateEvent}
-            sx={{
-              // paddingRight: "32px",
-              // paddingLeft: "32px",
-              width:"200px"
-            }}
-            disabled={!title}
-          >
+          {massageTypes.map(type => (
+            <MenuItem key={type.id} value={type.id}>
+              {type.name}
+            </MenuItem>
+          ))}
+        </Select>
+        <Typography sx={{ mt: 2 }}>Event Color:</Typography>
+        <input
+          type="color"
+          value={backgroundColor}
+          onChange={(e) => setBackgroundColor(e.target.value)}
+          style={{ width: "100%", height: "40px", border: "none", marginTop: "8px" }}
+        />
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+          <PrimaryButton onClick={handleCreateEvent} disabled={!title}>
             Confirm
           </PrimaryButton>
         </div>
@@ -284,22 +277,12 @@ const CreateEventPopUp = ({ handleClose, open }) => {
   );
 };
 
-export default CreateEventPopUp;
-
-const colorsList = [
-  "#624b4b",
-  "#bc2020",
-  "#bc20b6",
-  " #420b40",
-  "#1fad96",
-  "#3538ed",
-  " #1c474a",
-  "#32bb30",
-  "#cae958",
-  "#dc3e09",
+const massageTypes = [
+  { id: 'swedish', name: 'Swedish', duration: 60 },
+  { id: 'deepTissue', name: 'Deep Tissue', duration: 60 },
+  { id: 'sports', name: 'Sports', duration: 120 },
 ];
-const potentialLenght = [
-  30,
-  60,
-  90
-]
+
+const massages = ['Swedish', 'Deep Tissue', 'Sports'];
+
+export default CreateEventPopUp;

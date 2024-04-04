@@ -54,14 +54,14 @@ const getEventsGeneral = async (req, res) => {
 // get a single Event
 const getEvent = async (req, res) => {
   const {
-    query: { id },
+    query: { change_id },
   } = req;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  if (!mongoose.Types.ObjectId.isValid(change_id)) {
     return res.status(404).json({ error: "No such Event" });
   }
 
-  const event = await Event.findById(id);
+  const event = await Event.findById(change_id);
 
   if (!event) {
     return res.status(404).json({ error: "No such Event" });
@@ -110,6 +110,8 @@ const deleteEvent = async (req, res) => {
         error: "Invalid ObjectId provided",
       });
     }
+    //json the change_id
+    //const event_check = await Event.getEvent(change_id, res);
 
     const event = await Event.findOneAndDelete({ _id: change_id });
 
@@ -127,7 +129,9 @@ const deleteEvent = async (req, res) => {
 // update a Event
 const updateEvent = async (req, res) => {
   console.log("Trying to updating event")
-  const { change_id } = req.body;
+  const { change_id,status } = req.body;
+
+  console.log(status)
 
   if (!mongoose.Types.ObjectId.isValid(change_id)) {
     return res.status(400).json({ error: "No such Event" });

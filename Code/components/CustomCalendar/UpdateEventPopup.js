@@ -15,7 +15,7 @@ const mapState = ({ eventsData }) => ({
 const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const dispatch = useDispatch();
   const { user } = useUser();
- 
+
   const [ID, setID] = useState(event_main ? event_main._id : '');
   const [startTimeAndDate, setStartTimeAndDate] = useState(event_main ? event_main.start : new Date());
   const [endTimeAndDate, setEndTimeAndDate] = useState(event_main ? event_main.end : addMinutes(new Date(), 60));
@@ -23,14 +23,14 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
   const [backgroundColor, setBackgroundColor] = useState(event_main ? event_main.background : '#000000');
   const [selectedDuration, setSelectedDuration] = useState(60); // Duration is either 60 or 120
   const [selectedMassageType, setSelectedMassageType] = useState(event_main ? event_main.massageType : 'Unselected'); // Default to first type
- 
+
   //const isValidStart = isValid(startTimeAndDate);
   const [formattedStartDate, setFormattedStartDate] = useState(event_main.start && format(event_main.start, "eeee, MMMM dd, yyyy "));
   const [from_time, setFromTime] = useState("Unselected");
   const [to_time, setToTime] = useState("Unselected");
 
   const [eventLenght, setEventLenght] = useState(30);
- 
+
   useEffect(() => {
     if (event_main) {
       setID(event_main._id);
@@ -39,6 +39,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       setTitle(event_main.title);
       setBackgroundColor(event_main.background);
       setSelectedMassageType(event_main.massageType);
+
  
       setFromTime(event_main.start && format(event_main.start, "hh:mma"))
       setToTime(event_main.end && format(event_main.end, "hh:mma"))
@@ -116,6 +117,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     .catch(error => console.error('Error updating event:', error));
   };
  
+
   const handleCancelEvent = () => {
     if (ID) {
       const userEmail = user ? user.email : "not_signed_in";
@@ -130,7 +132,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
         user: userEmail,
         massageType: selectedMassageType,
       };
- 
+
       fetch("/api/events", {
         method: "POST",
         headers: {
@@ -148,7 +150,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       });
     }
   };
- 
+
   return (
     <BaseDialog open={open} handleClose={handleClose}>
       <Container sx={{ padding: "24px" }}>
@@ -157,15 +159,17 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
         <TextField
           fullWidth
           required
+
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           sx={{ my: 2 }}
         />
- 
+
         <Typography sx={{ mt: 2 }}>Massage Type:</Typography>
         <Select
           value={selectedMassageType}
           onChange={(e) => changeMassageTypeAndTime(e.target.value)} // Pass e.target.value directly
+
           fullWidth
           sx={{ mb: 2 }}
         >
@@ -204,7 +208,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
     </BaseDialog>
   );
 };
- 
+
 const massageTypes = [
   { id: 'swedish', name: "Swedish", duration: 60 },
   { id: 'deepTissue', name: "Deep Tissue", duration: 60 },
@@ -213,4 +217,5 @@ const massageTypes = [
 ];
 
 //Do not remove this line
+
 export default UpdateEventPopup;

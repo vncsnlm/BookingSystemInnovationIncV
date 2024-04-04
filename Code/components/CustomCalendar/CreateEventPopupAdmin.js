@@ -3,51 +3,77 @@ import {
   Container,
   Dialog,
   DialogTitle,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PrimaryButton from "components/Common/Buttons/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns";
+import { format,isValid, parseISO, addMinutes } from "date-fns";
 import { fetchEventsStart } from "redux/events/eventsSlice";
 import BaseDialog from "components/Common/Dialog";
-import Grid from '@mui/material/Grid';
-
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 const mapState = ({ eventsData }) => ({
   event: eventsData.event,
 });
 
+// Define the massage types
+const massageTypes = [
+  { id: 0, name: "Reserved", duration: null },
+  { id: 1, name: "Swedish", duration: 60 },
+  { id: 2, name: "Deep Tissue", duration: 60 },
+  { id: 3, name: "Sports", duration: 90 },
+  // Add more as needed
+];
+
+const durationOptions = [
+  { label: "1 Hour", value: 60 },
+  { label: "2 Hours", value: 120 },
+];
 
 const CreateEventPopUp = ({ handleClose, open }) => {
-  var { event } = useSelector(mapState);
+  const { event } = useSelector(mapState);
+  const dispatch = useDispatch();
+  const [title, setTitle] = useState("");
+  const [selectedMassageType, setSelectedMassageType] = useState('Swedish'); // Default to first type
+  const [selectedDuration, setSelectedDuration] = useState(60); // Default to 60 minutes
+  const [backgroundColor, setBackgroundColor] = useState("#000000");
+  const { user, isLoading } = useUser();
+  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+
+  const [massageLength, setMassageLenght] = useState("Unselected");
+
   var startTimeAndDate = event.start;//Here make both of these varibles var, const with useState does not work
   var endTimeAndDate = event.end;
-  const [from_time, setFromTime] = useState(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+  
   const formattedStartDate = startTimeAndDate && format(startTimeAndDate, "eeee, MMMM dd, yyyy ");
-  const [to_time, setToTime] = useState(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
-  const [title, setTitle] = useState("");
-  const [backgroundColor, setBackgroundColor] = useState("#000000");
-  const [massageLenght, setMassageLenght] = useState("Unselected");
-  const dispatch = useDispatch();
 
-  const { user, isLoading } = useUser();
+  useEffect(() => {
+    setFromTime(startTimeAndDate && format(startTimeAndDate, "hh:mma"));
+    setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+  })
 
   const changeEndTime = ({ length }) => {
     //alert(`You change the lenght of the massage to ${endTimeAndDate}`);
-    const newTimeAndDate = new Date(endTimeAndDate);//Reset time
+    //const newTimeAndDate = new Date(endTimeAndDate);//Reset time
 
     //if change lenght here
-    if(length == "+30"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
-    }else if(length == "-30"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
-    }else if(length == "+60"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
-    }else if(length == "-60"){
-      newTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    if(length == "e+30"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 30);
+    }else if(length == "e-30"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 30);
+    }else if(length == "e+60"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() + 60);
+    }else if(length == "e-60"){
+      endTimeAndDate.setMinutes(endTimeAndDate.getMinutes() - 60);
+    }else if(length == "s+30"){
+      startTimeAndDate.setMinutes(startTimeAndDate.getMinutes() + 30);
+    }else if(length == "s-30"){
+      startTimeAndDate.setMinutes(startTimeAndDate.getMinutes() - 30);
     }else if(length == "all day"){
       startTimeAndDate.setHours(0)
       startTimeAndDate.setMinutes(0)
@@ -61,162 +87,109 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     }else if(length == "start day"){
       startTimeAndDate.setHours(0)
       startTimeAndDate.setMinutes(0)
-      //make startTimeAndDate the start of the day
     }
 
     //alert(endTimeAndDate);
     
     //alert(`You change the lenght of the massage to ${newTimeAndDate}`);
-    endTimeAndDate = newTimeAndDate;
+    //endTimeAndDate = newTimeAndDate;
     setMassageLenght(length);
     setToTime(endTimeAndDate && format(endTimeAndDate, "hh:mma"));
+    setFromTime(startTimeAndDate && format(startTimeAndDate, "hh:mma"))
     //event.end = endTimeAndDate;
   };
 
   const handleCreateEvent = (e) => {
     e.preventDefault();
 
-    //alert(startTimeAndDate)
-    //alert(endTimeAndDate)
-
-    if(!title){
-      return;
-    }
-
-    //Save the user
-    var userEmail = "___default"
-    if(!user){
-      //alert("Please sign in")
-      userEmail = "not_signed_in"
-    }else{
-      userEmail = user.email
-    }
-
+    var userEmail = user?.email || "not_signed_in";
     try {
       const schema = {
-        title: title,
+        title,
         status: "New",
-        description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
-        user: String(userEmail),//User is being save, make sure to log in
+        description: `Booking for ${selectedMassageType} massage created by user ${userEmail}. Duration: ${selectedDuration} minutes.`,
+        user: userEmail,
         background: backgroundColor,
         start: startTimeAndDate,
         end: endTimeAndDate,
+        massageType: selectedMassageType,
       };
-      //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
-      if(!user){
-        alert("Your not logged in, please log in")//Should probably replace alert with something else
-        //Turning it off for easier development, turn it on for production later
-        //return
-      }else{
-        //testing
-        //alert(user.email)
-        //alert(schema.user)
-      }
-      //Booking verification here
-      if(schema.end<schema.start){
-        alert("Somehow the end time is after the start, please select a booking lenght to correct")
-        return
-     }
-      
 
-      const url = "/api/events";
-      fetch(url, {
+      fetch("/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(schema),
       })
-        .then((res) => res.json())
-        .then((json) => {
-          dispatch(fetchEventsStart({ url: "/api/events" }));
-          setTitle("");
-        });
+      .then(res => res.json())
+      .then(() => {
+        dispatch(fetchEventsStart());
+        handleClose();
+      });
     } catch (error) {
-      console.log(error);
+      console.error("Error creating event:", error);
     }
-    handleClose();
   };
 
-  const handleCloseAndReset = (e) => {
-    setHasSelectLenght(false)
-    handleClose()
-  }
-
   return (
-    <BaseDialog open={open} handleClose={handleClose} scroll={`body`} title={`Add Event`}>
-      <DialogTitle
-        style={{
-          fontSize: "21px",
-          fontWeight: "bold",
-          marginTop: "-24px",
-        }}
-      >
-        Create booking
-      </DialogTitle>
-      <Container
-        sx={{
-          background: "white",
-          top: "30%",
-          left: "10%",
-          minWidth: "450px",
-          paddingBottom: "64px",
-        }}
-      >
+    <BaseDialog open={open} handleClose={handleClose}>
+      <Container sx={{
+        background: "white",
+        minWidth: "450px",
+        paddingBottom: "64px",
+      }}>
         {formattedStartDate && (
           <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
-            {formattedStartDate}, {from_time} - {to_time}
+            {formattedStartDate}, Time: {from_time} to {to_time}
           </Typography>
         )}
         <div>
           <TextField
             required
             sx={{ marginTop: "16px" }}
-            placeholder="Client name or reserved"
-            label="Client name or reserved"
+            placeholder="Client name"
+            label="Client name"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <button onClick={() => setTitle("Reserved")}>Default</button>{/*Make button in same line at title, and is aligned horizontally*/}
         </div>
-        {/*Replace following div with massage type selector*/}
-        <div>
-          <div style={{ paddingTop: "16px" }}>
-            <label style={{ fontWeight: 700, fontSize:"1.2rem" }}>Select Event Color</label>
-            <div style={{ display: "flex",marginTop:'12px',marginBottom:'4px' }}>
-              {colorsList.map((item) => {
-                return (
-                  <div
-                    key={item}
-                    style={{
-                      background: item,
-                      width: "20px",
-                      height: "20px",
-                      marginRight: "8px",
-                    }}
-                    onClick={() => setBackgroundColor(item)}
-                  ></div>
-                );
-              })}
-            </div>
+        <Typography sx={{ mt: 2 }}>Massage Type:</Typography>
+        <Select
+          value={selectedMassageType}
+          onChange={(e) => setSelectedMassageType(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          {massageTypes.map((type) => (
+            <MenuItem key={type.id} value={type.id}>
+              {type.name}
+            </MenuItem>
+          ))}
+        </Select>
+        <Typography sx={{ mt: 2 }}>Duration:</Typography>
+        <Select
+          value={selectedDuration}
+          onChange={(e) => setSelectedDuration(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          {durationOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
 
-            <input
-              type={"color"}
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-              style={{
-                width: "100%",
-                marginTop: "4px",
-                border: "none",
-                background: "none",
-              }}
-            />
-            <Typography>
-              Selected color: <b>{backgroundColor}</b>
-            </Typography>
-          </div>
-        </div>
-        <div>
+        <Typography sx={{ mt: 2 }}>Event Color:</Typography>
+        <input
+          type="color"
+          value={backgroundColor}
+          onChange={(e) => setBackgroundColor(e.target.value)}
+          style={{ width: "100%", height: "40px", border: "none", marginTop: "8px" }}
+        />
+
         <div>Change start time</div>
             <div>Change duration
               <div style={{ display: 'flex', marginTop: '12px', marginBottom: '4px' }}>
@@ -237,27 +210,14 @@ const CreateEventPopUp = ({ handleClose, open }) => {
             <div>
               Selected color: <b>insert selected lenght</b>
             </div>
-            </div>
         </div>
-        
 
-        <div
-          style={{
-            display: "flex",
-            padding: "8px",
-            justifyContent: "center",
-            paddingTop: "32px",
-          }}
-        >
-          <PrimaryButton
-            onClick={handleCreateEvent}
-            sx={{
-              // paddingRight: "32px",
-              // paddingLeft: "32px",
-              width:"200px"
-            }}
-            disabled={!title}
-          >
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          paddingTop: "32px",
+        }}>
+          <PrimaryButton onClick={handleCreateEvent} disabled={!title || isLoading}>
             Confirm
           </PrimaryButton>
         </div>
@@ -280,12 +240,22 @@ const colorsList = [
   "#cae958",
   "#dc3e09",
 ];
+
 const potentialLenght = [
   "all day",
   "start day",
   "end day",
-  "+30",
-  "-30",
-  "+60",
-  "-60",
+  "e+30",
+  "e-30",
+  "e+60",
+  "e-60",
+  "s+30",
+  "s-30",
 ]
+
+const massages = [
+  'Swedish', 
+  'Deep Tissue', 
+  'Sports',
+  'Reserved',
+];
