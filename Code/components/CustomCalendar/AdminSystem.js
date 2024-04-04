@@ -22,6 +22,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
 
   const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
   const currentDate = new Date();
+  //THis needs improvement
   const lastBookableDate = new Date(currentDate);
   lastBookableDate.setDate(currentDate.getDate() + 14); // Two weeks from now
 
@@ -59,6 +60,7 @@ const CustomCalendar = ({ events = [], height, style, ...calendarProps }) => {
     <>
       <div className="">Admin sections</div>
       <button onClick={() => dispatch(fetchEventsStart())}>Refresh</button>
+
       <DragAndDropCalendar
         ref={calendarRef}
         localizer={localizer}

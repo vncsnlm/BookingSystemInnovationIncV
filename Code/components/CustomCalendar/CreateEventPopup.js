@@ -70,12 +70,16 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     e.preventDefault();
 
     // Get massage duration based on selected type
-    const selectedType = massageTypes.find(type => type.id === selectedMassageType);
+    /*const selectedType = massageTypes.find(type => type.id === selectedMassageType);
     const duration = selectedType ? selectedType.duration : 60; // Default duration is 60 minutes
 
     if (![60, 120].includes(duration)) {
       alert("Please select a valid duration (60 or 120 minutes).");
       return;
+    }*/
+    if(selectedMassageType == "Unselected"){
+      alert("Please select a massage type")
+      return
     }
 
     //Back up if to make sure user selects a lenght
@@ -165,6 +169,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
     
     //////////////////////////////////testing
     //remember to fix the useremail below
+    
+    alert(selectedMassageType)
     try {
       const schema = {
         title: title,
@@ -178,7 +184,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
       };
       //Can use this so that only signned in users can create bookings, probably could just be replaced with return tho
       if(!user){
-        alert("Your not logged in, please log in")//Should probably replace alert with something else
+        //alert("Your not logged in, please log in")//Should probably replace alert with something else
+
         //Turning it off for easier development, turn it on for production later
         //return
       }else{
@@ -189,7 +196,7 @@ const CreateEventPopUp = ({ handleClose, open }) => {
 
       //Booking verification here
       if(schema.end<schema.start){
-        alert("Somehow the end time is after the start, please select a booking lenght to correct")
+        alert("Somehow the end time is after the start, please reselect a booking lenght")
         return
       }
       if(schema.background = null){

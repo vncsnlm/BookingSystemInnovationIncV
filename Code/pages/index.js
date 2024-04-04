@@ -89,8 +89,9 @@ export default function Home() {
               height="50"
             />
             <p>Hello, {user.name}</p>
-            <a href="/booking" className="btn btn-primary">Go create a booking</a>
-        
+
+            <a href="/booking" className="btn btn-primary" id="go-to-booking-page">Go create a booking</a>
+
           </>
         )}
         <div style={footerTextStyle}>
