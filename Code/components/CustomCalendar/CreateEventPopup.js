@@ -176,8 +176,8 @@ const CreateEventPopUp = ({ handleClose, open }) => {
         title: title,
         status: "New",
         start: event.start,
-        end: event.end,
-        description: "Booking created by user "+String(userEmail)+" ", //I start using the description event data storage, change email with user id or something later
+        end: endTimeAndDate,
+        description: `Booking created by user ${String(userEmail)} starting at ${event.start} to ${endTimeAndDate} with the ${selectedMassageType}` , //I start using the description event data storage, change email with user id or something later
         user: String(userEmail),//User is being save, make sure to log in
         background: backgroundColor,
         massageTypes: selectedMassageType,

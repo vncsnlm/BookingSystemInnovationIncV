@@ -59,7 +59,7 @@ const UpdateEventPopup = ({ event_main, open, handleClose }) => {
       title,
       start: startTimeAndDate,
       end: endTimeAndDate,
-      description: `Booking updated by user ${userEmail}, Duration: ${endTimeAndDate - startTimeAndDate} mins, Massage Type: ${selectedMassageType}`,
+      description: `${description}\nBooking updated by user ${userEmail}, Duration: ${endTimeAndDate - startTimeAndDate} mins, Massage Type: ${selectedMassageType}.`,
       background: backgroundColor,
       user: userEmail,
       massageType: selectedMassageType,
